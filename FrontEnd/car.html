@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Car Rental - Car</title>
+</head>
+<body class="container">
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-5 text-dark text-decoration-none"
+       href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCarRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" type="button">Login</button>
+    </div>
+</header>
+
+<form class="row g-3" id="newCarForm">
+    <div class="col-md-12">
+        <label class="form-label fw-bolder fs-5">Car</label>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputRegistrationNo">Registration Number</label>
+        <input class="form-control" id="inputRegistrationNo" name="inputRegistrationNo" type="text">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputFuelType">Fuel Type</label>
+        <select class="form-select" id="inputFuelType" name="inputFuelType">
+            <option selected>Petrol</option>
+            <option>Diesel</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputType">Type</label>
+        <select class="form-select" id="inputType" name="inputType">
+            <option selected>General</option>
+            <option>Premium</option>
+            <option>Luxury</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputTransmissionType">Transmission Type</label>
+        <select class="form-select" id="inputTransmissionType" name="inputTransmissionType">
+            <option selected>Auto</option>
+            <option>Manual</option>
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="inputBrand">Brand</label>
+        <input class="form-control" id="inputBrand" name="inputBrand" type="text">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputNoOfPassengers">Number of Passengers</label>
+        <input class="form-control" id="inputNoOfPassengers" name="inputNoOfPassengers" type="text">
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label" for="inputColor">Color</label>
+        <input class="form-control" id="inputColor" name="inputColor" type="text">
+    </div>
+    <br>
+    <div class="col-md-12">
+        <button class="btn btn-primary" id="btnAddCar" type="button">Add Car</button>
+    </div>
+    <div class="col-md-12">
+        <label class="form-label" id="lblCarDetails">Car - Registartion Number : </label>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputRentDurationType">Rent Duration Type</label>
+        <select class="form-select" id="inputRentDurationType" name="inputRentDurationType">
+            <option selected>Daily</option>
+            <option>Monthly</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputRate">Rate</label>
+        <input class="form-control" id="inputRate" name="inputRate" type="text">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputFreeKms">Free Kms</label>
+        <input class="form-control" id="inputFreeKms" name="inputFreeKms" type="text">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="inputPricePerExtraKm">Price Per Extra Km</label>
+        <input class="form-control" id="inputPricePerExtraKm" name="inputPricePerExtraKm" type="text">
+    </div>
+    <div class="col-md-3">
+        <button class="btn btn-primary" id="btnAdd" type="button">Add</button>
+    </div>
+</form>
+
+
+<main>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Brand</th>
+            <th scope="col">Type</th>
+            <th scope="col">Registration Number</th>
+            <th scope="col">Fuel Type</th>
+            <th scope="col">Transmission Type</th>
+            <th scope="col">No of Passengers</th>
+            <th scope="col">Color</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody id="tblCars">
+        </tbody>
+    </table>
+</main>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script>
+    getAllCars();
+
+    $('#btnAddCar').click(function () {
+
+        let registrationNo = $('#inputRegistrationNo').val();
+        let fuelType = $('#inputFuelType').val().toLowerCase();
+        let brand = $('#inputBrand').val();
+        let type = $('#inputType').val().toLowerCase();
+        let noOfPassengers = $('#inputNoOfPassengers').val();
+        let transmissionType = $('#inputTransmissionType').val().toLowerCase();
+        let color = $('#inputColor').val();
+        let status = 'available';
+
+        let car = {
+            brand: brand,
+            color: color,
+            fuelType: fuelType,
+            noOfPassengers: noOfPassengers,
+            registrationNo: registrationNo,
+            status: status,
+            transmissionType: transmissionType,
+            type: type
+        }
+
+        $.ajax({
+            url: 'http://localhost:8080/rental/car',
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(car),
+            dataType: "json",
+            success: function (resp) {
+                getAllCars();
+            },
+            error: function (error) {
+                let cause = JSON.parse(error.responseText).message;
+                alert(cause);
+            }
+        });
+    });
+
+    function bindTblCarsRowClickEvents() {
+        let registrationNo;
+        $("#tblCars>tr").click(function () {
+            registrationNo = $(this).children(":eq(2)").text();
+            console.log(registrationNo);
+            getCar(registrationNo);
+        });
+    }
+
+    function getCar(registrationNo) {
+        $('#lblCarDetails').empty();
+        $.ajax({
+            url: 'http://localhost:8080/rental/car?registrationNo=' + registrationNo,
+            dataType: "json",
+            success: function (resp) {
+                console.log(resp);
+                $('#lblCarDetails').text(" Car - Registration Number : ");
+                $('#lblCarDetails').append(resp.data.registrationNo);
+            },
+            error: function (error) {
+                let cause = JSON.parse(error.responseText).message;
+                alert(cause);
+            }
+        });
+    }
+
+
+
+
+
+    function getAllCars() {
+        $('#tblCars').empty();
+        let registrationNo;
+        $.ajax({
+            url: 'http://localhost:8080/rental/car',
+            dataType: "json",
+            success: function (resp) {
+                console.log(resp);
+                for (let car of resp.data) {
+                    var row = '<tr><td>' + car.brand + '</td><td>' + car.type + '</td><td>' + car.registrationNo + '</td><td>' + car.fuelType + '</td><td>' + car.transmissionType + '</td><td>' + car.noOfPassengers + '</td><td>' + car.color + '</td><td>' + car.status + '</td></tr>';
+                    $("#tblCars").append(row);
+                }
+                bindTblCarsRowClickEvents();
+            }
+        });
+    }
+</script>
+</body>
+</html>

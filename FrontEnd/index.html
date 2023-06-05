@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/heroes.css" rel="stylesheet">
+    <title>Car Rental</title>
+</head>
+<body class="container">
+
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-5 text-dark text-decoration-none" href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkIndexRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" type="button" id="btnLoginOut">Login</button>
+    </div>
+</header>
+<div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+    <div class="col-10 col-sm-8 col-lg-6">
+        <img alt="Easy Car Rental" class="d-block mx-lg-auto img-fluid" height="300" loading="lazy"
+             src="assets/img/index.jpg" width="300">
+    </div>
+    <div class="col-lg-6">
+        <h1 class="display-5 fw-bold lh-1 mb-3">Easy Car Rental</h1>
+        <p class="lead">One stop shop for all your car hiring purposes</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <button class="btn btn-primary btn-lg px-4 me-md-2" id="btnPricing" type="button">Pricing</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+
+<script>
+    let credentials = null;
+
+    function checkLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+
+        if (credentials != null) {
+            $('#lnkIndexRent').css("display", "block");
+            $('#btnLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+        }
+    }
+
+    checkLocalStorage();
+
+    $('#btnLoginOut').click(function () {
+        if ($('#btnLoginOut').innerHTML == "Logout") {
+            alert("Successfully Logged out of the System");
+            //$('#btnLoginOut').html("Login");
+            localStorage.removeItem("credentials");
+        } else {
+            location.href = "signin.html";
+        }
+    });
+
+</script>
+</body>
+</html>

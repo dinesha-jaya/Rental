@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/sign-in.css" rel="stylesheet">
+    <title>Car Rental - Login</title>
+</head>
+<body class="container">
+
+<div class="col-md-10 mx-auto col-lg-5">
+    <form class="p-4 p-md-5 border rounded-3 bg-light">
+        <div class="form-floating mb-3">
+            <input class="form-control" id="floatingInput" placeholder="name@example.com" type="email">
+            <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input class="form-control" id="floatingPassword" id placeholder="Password" type="password">
+            <label for="floatingPassword">Password</label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" id="btnSignin" type="button">Sign In</button>
+        <hr class="my-4">
+        <small class="text-muted">No Account? <a href="customer.html"> Register </a> or <a href="">Continue
+            Guest</a></small>
+    </form>
+</div>
+
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+
+<script>
+    // console.log(sessionStorage.getItem(JSON.parse(credentials)));
+    console.log(localStorage.getItem("credentials"));
+
+    let credentials = JSON.parse(localStorage.getItem("credentials"));
+    if (credentials != null) {
+        $('#floatingInput').val(credentials.username);
+        $('#floatingPassword').val(credentials.password);
+        localStorage.removeItem("credentials");
+    }
+
+    $('#btnSignin').click(function () {
+        let username = $('#floatingInput').val();
+        let password = $('#floatingPassword').val();
+
+        let user = {
+            username: username,
+            password: password,
+            userCategory: 'customer'
+        }
+
+        let credentials;
+
+        async function asyncFunction2() {
+            try {
+                const respond = await $.ajax({
+                    url: 'http://localhost:8080/rental/user/signin',
+                    contentType: 'application/json',
+                    method: 'post',
+                    data: JSON.stringify(user),
+                    success: function (resp) {
+                        console.log(resp.data);
+                        if (resp.data === null) {
+                            alert("username and password mismatch")
+                        } else {
+                            credentials = {
+                                username: resp.data.username,
+                                password: "",
+                                userCategory: resp.data.userCategory
+                            }
+                            console.log(credentials);
+                        }
+                    }
+                }).then(() => {
+                    localStorage.setItem("credentials", JSON.stringify(credentials));
+                    location.href = "index.html";
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        asyncFunction2();
+
+    })
+
+
+</script>
+</body>
+</html>

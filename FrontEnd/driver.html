@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Car Rental - Driver</title>
+</head>
+<body class="container">
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none" href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkDriverRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" type="button">Login</button>
+    </div>
+</header>
+<form class="row g-3" id="addDriverForm">
+    <div class="col-12">
+        <label for="addDriverForm" class="form-label fw-bolder fs-5">Driver</label>
+    </div>
+    <div class="col-md-6">
+        <label for="inputName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="inputName">
+    </div>
+    <div class="col-md-6">
+        <label for="inputEmail" class="form-label">Email</label>
+        <input type="email" class="form-control" id="inputEmail">
+    </div>
+    <div class="col-md-6">
+        <label for="inputDriverContactNumber" class="form-label">Contact Number</label>
+        <input type="text" class="form-control" id="inputDriverContactNumber">
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="licenseCheck">
+            <label class="form-check-label" for="licenseCheck">License Uploaded</label>
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Add Driver</button>
+    </div>
+</form>
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>

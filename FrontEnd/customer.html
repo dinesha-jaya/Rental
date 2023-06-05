@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Car Rental - Register Customer</title>
+</head>
+<body class="container">
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none" href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-dark" href="#">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCustomerRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" id="btnLoginCustomer" type="button" id="btnCustomerLoginOut">Login</button>
+    </div>
+</header>
+<form class="row g-3" id="newCustomerForm">
+    <div class="col-md-12">
+        <label class="form-label fw-bolder fs-5" for="newCustomerForm">Customer</label>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="inputFirstName">First Name</label>
+        <input class="form-control" id="inputFirstName" name="inputFirstName" type="text">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="inputLastName">Last Name</label>
+        <input class="form-control" id="inputLastName" name="inputLastName" type="text">
+    </div>
+    <div class="col-12">
+        <label class="form-label" for="inputAddress">Address</label>
+        <input class="form-control" id="inputAddress" name="inputAddress" type="text">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="inputEmail">Email</label>
+        <input class="form-control" id="inputEmail" name="inputEmail" type="email">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="inputContactNo">Contact Number</label>
+        <input class="form-control" id="inputContactNo" name="inputContactNo" type="text">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label" for="inputId">Identity</label>
+        <select class="form-select" id="inputId" name="inputId">
+            <option selected>National Identity Card</option>
+            <option>Driver's License</option>
+        </select>
+    </div>
+    <div class="col-md-10">
+        <div class="form-check">
+            <input class="form-check-input" id="idImageCheck" name="idImageCheck" type="checkbox">
+            <label class="form-check-label" for="idImageCheck">ID Image Uploaded</label>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <button class="btn btn-primary" id="btnRegisterCustomer" type="button">Register</button>
+        <span id="proceedToLogin"></span>
+    </div>
+</form>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script>
+    let credentials = null;
+
+    function checkLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnCustomerLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+        }
+    }
+
+    checkLocalStorage();
+
+    $('#btnCustomerLoginOut').click(function () {
+        if ($('#btnLoginOut').innerHTML == "Logout") {
+            alert("Successfully Logged out of the System");
+            //$('#btnLoginOut').html("Login");
+            localStorage.removeItem("credentials");
+            $('#btnCustomerLoginOut').html("Login");
+        }
+    });
+
+    $('#btnRegisterCustomer').click(function () {
+        let firstName = $('#inputFirstName').val();
+        let lastName = $('#inputLastName').val();
+        let address = $('#inputAddress').val();
+        let email = $('#inputEmail').val();
+        let contactNo = $('#inputContactNo').val();
+        let identity = $('#inputId').val();
+        let idCheck = $('#idImageCheck:checked').val();
+
+        let idImageExists;
+        if (idCheck === 'on') {
+            idImageExists = true;
+        } else {
+            idImageExists = false;
+        }
+
+        // let password = Math.floor(Math.random() * 10000);
+
+        // let user = {
+        //     password: password,
+        //     userCategory: "customer",
+        //     username: email
+        // }
+
+        let customer = {
+            address: address,
+            contactNo: contactNo,
+            email: email,
+            firstName: firstName,
+            idImage: idImageExists,
+            idType: identity,
+            lastName: lastName,
+        }
+
+        $.ajax({
+            url: 'http://localhost:8080/rental/customer',
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(customer),
+            // dataType: "json",
+            // success: function (resp) {
+            // },
+            error: function (error) {
+                let cause = JSON.parse(error.responseText).message;
+                alert(cause);
+            }
+        });
+
+        let credentials = {
+            username: email,
+            password: "",
+            userCategory: "customer"
+        }
+
+        localStorage.setItem("credentials", JSON.stringify(credentials));
+
+        // sessionStorage.setItem("username", `${email}`)
+
+        // document.cookie = `username=${email}`;
+
+
+        // async function asyncFunc() {
+        //     try {
+        //         const res = await $.ajax({
+        //             url: 'http://localhost:8080/rental/user',
+        //             method: 'post',
+        //             contentType: 'application/json',
+        //             data: JSON.stringify(user),
+        //             dataType: "json",
+        //             success: function (resp) {
+        //                 userId = resp.data;
+        //             },
+        //             error: function (error) {
+        //                 let cause = JSON.parse(error.responseText).message;
+        //                 alert(cause);
+        //             }
+        //         }).then(() => {
+        //             customer = {
+        //                 address: address,
+        //                 contactNo: contactNo,
+        //                 email: email,
+        //                 firstName: firstName,
+        //                 idImage: idImageExists,
+        //                 idType: identity,
+        //                 lastName: lastName,
+        //                 user_userId: userId
+        //             }
+        //             //console.log(customer);
+        //
+        //             $.ajax({
+        //                 url: 'http://localhost:8080/rental/customer',
+        //                 method: 'post',
+        //                 contentType: 'application/json',
+        //                 data: JSON.stringify(customer),
+        //                 dataType: "json",
+        //                 success: function (resp) {
+        //                     console.log(resp);
+        //                 },
+        //                 error: function (error) {
+        //                     let cause = JSON.parse(error.responseText).message;
+        //                     alert(cause);
+        //                 }
+        //             });
+        //         });
+        //     } catch (err) {
+        //         console.log(err);
+        //     }
+        // }
+        //
+        // asyncFunc();
+
+
+    });
+
+    $('#btnLoginCustomer').click(function () {
+        // $.ajax({
+        //     url: 'http://localhost:8080/rental/customer/cookie',
+        //     //headers: {'Access-Control-Allow-Credentials': true},
+        //     //contentType: "text/plain",
+        //     xhrFields: { withCredentials:true },
+        //     //cookie: document.cookie,
+        //     //crossDomain: true
+        // });
+
+        //JSON.stringify(sessionStorage.credentials),
+
+        let jsonString;
+
+        async function asyncFunc() {
+            try {
+                const res = await $.ajax({
+                    url: 'http://localhost:8080/rental/customer/cookie',
+                    method: 'post',
+                    data: localStorage.getItem("credentials"),
+                    contentType: 'application/json',
+                    success: function (resp) {
+                        console.log(resp.data);
+                        jsonString = JSON.stringify(resp.data);
+                    }
+                }).then(() => {
+                    localStorage.setItem("credentials", jsonString);
+                    location.href = "signin.html";
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        asyncFunc();
+
+    });
+</script>
+</body>
+</html>

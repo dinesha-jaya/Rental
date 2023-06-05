@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+    <title>Car Rental - Rental</title>
+</head>
+<body class="container">
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none" href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" type="button" id="btnRentLoginOut">Login</button>
+    </div>
+</header>
+<form class="row g-3" id="makeRentForm">
+    <div class="col-12">
+        <label class="form-label fw-bolder fs-5" for="makeRentForm">Make Rent</label>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label" for="inputCarType">Car Type</label>
+        <select class="form-select" id="inputCarType" name="inputCarType">
+            <option>General</option>
+            <option>Premium</option>
+            <option>Luxury</option>
+        </select>
+    </div>
+    <div class="col-md-8">
+        <label class="form-label" for="inputCars">Car</label>
+        <select class="form-select" id="inputCars" name="inputCars">
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label" for="inputRentDurationPlan">Rent Duration Plan</label>
+        <select class="form-select" id="inputRentDurationPlan" name="inputRentDurationPlan">
+            <option>Daily</option>
+            <option>Monthly</option>
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label" for="inputStartDate">Start Date</label>
+        <input class="form-control" id="inputStartDate" type="date" name="inputStartDate">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label" for="inputEndDate">Tentative End Date</label>
+        <input class="form-control" id="inputEndDate" type="date" name="inputEndDate">
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Car</th>
+            <th scope="col">Driver Option</th>
+            <th scope="col"><i class="fa-solid fa-trash"></i></th>
+        </tr>
+        </thead>
+        <tbody id="tblSelectCars">
+        </tbody>
+    </table>
+    <div class="col-md-12">
+        <button class="btn btn-primary" type="button" id="btnMakeRent">Make Rent</button>
+    </div>
+</form>
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script src="js/all.min.js"></script>
+
+<script>
+    let credentials = null;
+
+    function checkLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnRentLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+        }
+    }
+
+    checkLocalStorage();
+
+    function loadAvailableCars(carType) {
+        $.ajax({
+            url: 'http://localhost:8080/rental/rent?type=' + carType,
+            dataType: 'json',
+            success: function (resp) {
+                for (let car of resp.data) {
+                    let option = '<option>' + car.brand + ' : ' + car.registrationNo + '</option>';
+                    $('#inputCars').append(option);
+                }
+            }
+        });
+    }
+
+    $('#inputCarType').change(function () {
+        let carType = $(this).val().toLowerCase();
+        $('#inputCars').empty();
+        loadAvailableCars(carType);
+    });
+
+
+
+    function bindTblSelectCarsRowClickEvents() {
+        // let regNo;
+        $('#tblSelectCars>tr>td:nth-child(3)').click(function () {
+            console.log($(this));
+            $($(this).parent()).remove();
+
+        });
+        // return regNo;
+    }
+
+    function flagTheCar(regNo) {
+        $.ajax({
+            url: 'http://localhost:8080/rental/rent?registrationNo=' + regNo
+        });
+    }
+
+    $('#inputCars').change(function () {
+        let car = $(this).val();
+        let regNo = $(this).val().split(':')[1].trim();
+        let row = '<tr><td>' + car + '</td><td><input class="form-check-input" type="checkbox"></td><td><i class="fa-solid fa-trash deleteCar"></i></td></tr>';
+        $('#tblSelectCars').append(row);
+        $("#inputCars :selected").remove();
+        flagTheCar(regNo);
+        bindTblSelectCarsRowClickEvents();
+    });
+
+    // function getCheckBoxResponse() {
+    //     // let row;
+    //     $('#tblSelectCars>tr>td:nth-child(3)>input').change(function () {
+    //         // row = $(this).parent().parent().children(':eq(0)').text();
+    //         // console.log(row);
+    //         console.log("changed");
+    //         if($(this).prop("checked")) {
+    //             console.log("true");
+    //             return true;
+    //             // $.ajax({
+    //             //     url: 'http://localhost:8080/rental/driver/select',
+    //             //     dataType: 'json',
+    //             //     success: function (resp) {
+    //             //         console.log(resp);
+    //             //         $(`#tblSelectCars>tr:nth-child(${+row})>td:nth-child(4)`).html(resp.data.name);
+    //             //         console.log(resp.data.driverId);
+    //             //         flagTheDriver(resp.data.driverId);
+    //             //     }
+    //             // });
+    //         } else {
+    //             // $(`#tblSelectCars>tr:nth-child(${+row})>td:nth-child(4)`).html("");
+    //             console.log("false");
+    //             return false;
+    //         }
+    //     });
+    // }
+
+    function getCarsFromTable() {
+        let table = document.getElementById('tblSelectCars');
+
+        let selectedCars = [];
+
+        for (let r = 0; r < table.rows.length; r++) {
+            selectedCars.push( {
+                items: []
+            });
+            let cell = table.rows[r].cells;
+
+            for (let c = 0; c < cell.length; c++) {
+                let inputElem = cell[c].children[0];
+                let isInput = inputElem instanceof HTMLInputElement;
+                // console.log("isInput" + isInput);
+
+                let tmpInputElem;
+
+                if (isInput)
+                {
+                    tmpInputElem = cell[c].children[0].checked;
+                }
+                else
+                {
+                    tmpInputElem = cell[c].innerHTML;
+                }
+
+                selectedCars[r].items.push(tmpInputElem);
+            }
+        }
+        return selectedCars;
+    }
+
+    $('#btnMakeRent').click(function () {
+        let carDriverList = [];
+
+        let rentStart = {
+            rentDurationPlan: "",
+            startDate: "",
+            endDate: "",
+            username: "",
+            carDriverList: []
+        };
+
+        let rentDurationPlan = $('#inputRentDurationPlan').val();
+        let startDate = $('#inputStartDate').val();
+        let endDate = $('#inputEndDate').val();
+        let username = credentials.username;
+
+        let cars = getCarsFromTable();
+
+        for (let car of cars) {
+            let carDriver = {
+                registrationNo: "",
+                driverOption: false,
+            }
+            carDriver.registrationNo = car.items[0].split(':')[1].trim();
+            carDriver.driverOption = car.items[1];
+            carDriverList.push(carDriver);
+        }
+
+        rentStart.rentDurationPlan = rentDurationPlan;
+        rentStart.startDate = startDate;
+        rentStart.endDate = endDate;
+        rentStart.username = username;
+        rentStart.carDriverList = carDriverList;
+
+        console.log(rentStart);
+
+        $.ajax({
+            url: 'http://localhost:8080/rental/rent/rent',
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(rentStart),
+            dataType: 'json',
+            success: function (resp) {
+            },
+            error: function (error) {
+                let cause = JSON.parse(error.responseText).message;
+                alert(cause);
+            }
+        });
+
+        alert("The rental is pending for approval");
+
+    })
+</script>
+</body>
+</html>

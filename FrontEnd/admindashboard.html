@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Car Rental - Admin Dashboard</title>
+</head>
+<body class="container">
+
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-5 text-dark text-decoration-none"
+       href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkIndexRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" id="btnLoginOut" type="button">Login</button>
+    </div>
+</header>
+
+<form class="row g-3" id="admindashboardform">
+    <div class="col-12">
+        <label class="form-label fw-bolder fs-5" for="admindashboardform">Admin Dashboard - Rentals</label>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Rental Id</th>
+            <th scope="col">Rent Duration Plan</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Approximate End Date</th>
+            <th scope="col">Actual End Date</th>
+            <th scope="col">Remarks</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody id="tblRentals">
+        </tbody>
+    </table>
+</form>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script>
+    async function getAllRentals() {
+        try {
+            let responds = await $.ajax({
+                url: 'http://localhost:8080/rental/rent',
+                dataType: 'json',
+                success: function (resp) {
+                    for (let rental of resp.data) {
+                        let row = `<tr>
+                        <td>${rental.rentalId}</td>
+                        <td>${rental.rentDurationPlan}</td>
+                        <td>${rental.startDate}</td>
+                        <td>${rental.endDate}</td>
+                        <td>${rental.actualEndDate}</td>
+                        <td>${rental.remarks}</td>
+                        <td>${rental.status}</td>
+                        </tr>`;
+                        $('#tblRentals').append(row);
+                    }
+                }
+            }).then(() => {
+                bindTblRentalsRowClickEvents();
+            });
+        } catch (error) {
+
+        }
+    }
+
+    function redirectToRentStart(rentalId) {
+        $.ajax({
+            url: 'http://localhost:8080/rental/rent?rentalId=' + rentalId,
+            dataType: 'json',
+            success: function () {
+                location.href = "rentstart.html";
+            }
+        });
+    }
+
+    function bindTblRentalsRowClickEvents() {
+        $('#tblRentals > tr').click(function () {
+            let rentalId = $(this).children().eq(0).text();
+            let status = $(this).children().eq(6).text();
+
+            console.log(status);
+            console.log(rentalId);
+            if (status == "pending") {
+                redirectToRentStart(rentalId);
+            }
+        });
+    }
+
+    function displayRentals() {
+        $('#tblRentals').empty();
+        getAllRentals();
+    }
+
+    displayRentals();
+
+
+</script>
+</body>
+</html>

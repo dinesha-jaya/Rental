@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/pricing.css" rel="stylesheet">
+    <title>Car Rental - Pricing</title>
+</head>
+<body class="container">
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-5 text-dark text-decoration-none" href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkPricingRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" type="button" id="btnPricingLoginOut">Login</button>
+    </div>
+</header>
+<main>
+    <h1 class="display-6 fw-normal text-center">Pricing</h1>
+    <p class="fs-5 text-muted text-center">At an affordable hiring price, suited for any need</p>
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm">
+                <div class="card-header py-3">
+                    <h4 class="my-0 fw-normal">General</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3">
+                        <li>From Rs.</li>
+                    </ul>
+                    <h1 class="card-title pricing-card-title">2500<small class="text-muted fw-light">/day</small></h1>
+                    <h1 class="card-title pricing-card-title">64350<small class="text-muted fw-light">/mo</small></h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>100km Free/Day</li>
+                        <li>2400km Free/Month</li>
+                        <li>From Rs. 30/Extra km</li>
+                    </ul>
+                    <button class="w-100 btn btn-lg btn-outline-primary" id="btnGeneralCars" type="button">Cars</button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm">
+                <div class="card-header py-3">
+                    <h4 class="my-0 fw-normal">Premium</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3">
+                        <li>From Rs.</li>
+                    </ul>
+                    <h1 class="card-title pricing-card-title">5500<small class="text-muted fw-light">/day</small></h1>
+                    <h1 class="card-title pricing-card-title">120330<small class="text-muted fw-light">/mo</small></h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>100km Free/Day</li>
+                        <li>2400km Free/Month</li>
+                        <li>From Rs. 49.50/Extra km</li>
+                    </ul>
+                    <button class="w-100 btn btn-lg btn-primary" id="btnPremiumCars" type="button">Cars</button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                <div class="card-header py-3 text-bg-primary border-primary">
+                    <h4 class="my-0 fw-normal">Luxury</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3">
+                        <li>From Rs.</li>
+                    </ul>
+                    <h1 class="card-title pricing-card-title">10000<small class="text-muted fw-light">/day</small></h1>
+                    <h1 class="card-title pricing-card-title">227150<small class="text-muted fw-light">/mo</small></h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>100km Free/Day</li>
+                        <li>2400km Free/Month</li>
+                        <li>From Rs. 85/Extra km</li>
+                    </ul>
+                    <button class="w-100 btn btn-lg btn-primary" id="btnLuxuryCars" type="button">Cars</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div id="tblShow">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Car</th>
+            <th scope="col">Rent Duration Type</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Number Of Passengers</th>
+            <th scope="col">Free Kms</th>
+            <th scope="col">Price Per Extra Km</th>
+        </tr>
+        </thead>
+        <tbody id="tblPricing">
+        </tbody>
+    </table>
+</div>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+
+<script>
+    let credentials = null;
+
+    function checkLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnPricingLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+        }
+    }
+
+    checkLocalStorage();
+
+    function getCars(carType) {
+        $('#tblPricing').empty();
+        $.ajax({
+            url: 'http://localhost:8080/rental/car?carType=' + carType,
+            success: function (resp) {
+                for (let car of resp.data) {
+                    let row = '<tr><td>' + car.brand + '</td><td>' + car.rentDurationType + '</td><td>' + car.rate + '</td><td>' + car.noOfPassengers + '</td><td>' + car.freeKms + '</td><td>' + car.pricePerExtraKm + '</td></tr>';
+                    $("#tblPricing").append(row);
+                }
+            }
+        });
+    }
+
+    $('#btnGeneralCars').click(function () {
+        getCars("general");
+    });
+
+    $('#btnPremiumCars').click(function () {
+        getCars("premium");
+    });
+
+    $('#btnLuxuryCars').click(function () {
+        getCars("luxury");
+    });
+
+
+
+</script>
+</body>
+</html>

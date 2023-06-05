@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Car Rental - Rental Start</title>
+</head>
+<body class="container">
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none" href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentStartRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" type="button">Login</button>
+    </div>
+</header>
+<form class="row g-3" id="startRentalForm">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Car</th>
+            <th scope="col">Driver</th>
+            <th scope="col">Loss Damage Waiver Payment Receipt Uploaded</th>
+            <th scope="col">Meter Start</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td>
+                <select class="form-select" id="inputChangeDriver">
+                    <option></option>
+                    <option></option>
+                </select>
+            </td>
+            <td>
+                <div class="form-check">
+                    <input class="form-check-input" id="lossDamageWaiverPaymentReceiptCheck" type="checkbox">
+                </div>
+            </td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="col-md-12">
+        <div class="form-check">
+            <input class="form-check-input" id="cancelRentCheck" type="checkbox">
+            <label class="form-check-label" for="cancelRentCheck">Cancel Rental</label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label fw-bold fs-6" for="inputRemarks">Remarks</label>
+        <textarea class="form-control" id="inputRemarks" type="text"></textarea>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary" type="submit">Rent Start</button>
+    </div>
+</form>
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
