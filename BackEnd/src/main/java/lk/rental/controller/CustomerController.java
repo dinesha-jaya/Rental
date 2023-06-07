@@ -1,6 +1,8 @@
 package lk.rental.controller;
 
 import lk.rental.dto.CustomerDTO;
+import lk.rental.dto.CustomerRentRequestDTO;
+import lk.rental.dto.CustomerRentResponseDTO;
 import lk.rental.dto.UserDTO;
 import lk.rental.service.CustomerService;
 import lk.rental.service.UserService;
@@ -23,6 +25,13 @@ public class CustomerController {
     public ResponseUtil saveCustomer(@RequestBody CustomerDTO customerDTO) {
         customerService.addCustomer(customerDTO);
         return new ResponseUtil("200", " Added.!", null);
+    }
+
+    @PostMapping("/rentSummary")
+    public ResponseUtil rentSummary(@RequestBody CustomerRentRequestDTO customerRentRequestDTO) {
+        System.out.println(customerRentRequestDTO);
+        CustomerRentResponseDTO customerRentResponseDTO = customerService.customerRentSummary(customerRentRequestDTO);
+        return new ResponseUtil("200", " Added.!", customerRentResponseDTO);
     }
 
 //    @GetMapping

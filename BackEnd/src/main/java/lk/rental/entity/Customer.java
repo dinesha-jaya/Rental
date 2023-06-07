@@ -31,7 +31,7 @@ public class Customer {
     private User user;
 
     @OneToMany(mappedBy = "customer", cascade = {CascadeType.ALL})
-    private List<Rental> rentals = new ArrayList<>();
+    private List<Rent> rents = new ArrayList<>();
 
 
 }

@@ -14,12 +14,12 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkIndexRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkAdminDBRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnLoginOut" type="button">Login</button>
+        <button class="btn btn-outline-primary me-2" id="btnAdminDBLoginOut" type="button">Login</button>
     </div>
 </header>
 
@@ -46,6 +46,33 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery-3.6.3.min.js"></script>
 <script>
+    let credentials = null;
+
+    function checkUser(username) {
+        if (username !== "admin@rental.lk") {
+            location.href = "index.html";
+        }
+    }
+
+    function checkAdminDBLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnAdminDBLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+            let username = credentials.username;
+            checkUser(username);
+        }
+    }
+
+    checkAdminDBLocalStorage();
+
     async function getAllRentals() {
         try {
             let responds = await $.ajax({

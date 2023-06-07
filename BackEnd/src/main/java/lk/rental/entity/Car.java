@@ -39,5 +39,5 @@ public class Car {
     private String status;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
-    private List<RentalHasCar> rentalHasCars = new ArrayList<>();
+    private List<RentHasCar> rentHasCars = new ArrayList<>();
 }

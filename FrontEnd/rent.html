@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/all.min.css">
+    <link href="css/all.min.css" rel="stylesheet">
     <title>Car Rental - Rental</title>
 </head>
 <body class="container">
 <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none" href="index.html">Easy
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none"
+       href="index.html">Easy
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
@@ -17,7 +18,7 @@
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" type="button" id="btnRentLoginOut">Login</button>
+        <button class="btn btn-outline-primary me-2" id="btnRentLoginOut" type="button">Login</button>
     </div>
 </header>
 <form class="row g-3" id="makeRentForm">
@@ -46,11 +47,11 @@
     </div>
     <div class="col-md-4">
         <label class="form-label" for="inputStartDate">Start Date</label>
-        <input class="form-control" id="inputStartDate" type="date" name="inputStartDate">
+        <input class="form-control" id="inputStartDate" name="inputStartDate" type="date">
     </div>
     <div class="col-md-4">
         <label class="form-label" for="inputEndDate">Tentative End Date</label>
-        <input class="form-control" id="inputEndDate" type="date" name="inputEndDate">
+        <input class="form-control" id="inputEndDate" name="inputEndDate" type="date">
     </div>
     <table class="table">
         <thead>
@@ -64,7 +65,7 @@
         </tbody>
     </table>
     <div class="col-md-12">
-        <button class="btn btn-primary" type="button" id="btnMakeRent">Make Rent</button>
+        <button class="btn btn-primary" id="btnMakeRent" type="button">Make Rent</button>
     </div>
 </form>
 
@@ -110,7 +111,6 @@
         $('#inputCars').empty();
         loadAvailableCars(carType);
     });
-
 
 
     function bindTblSelectCarsRowClickEvents() {
@@ -172,7 +172,7 @@
         let selectedCars = [];
 
         for (let r = 0; r < table.rows.length; r++) {
-            selectedCars.push( {
+            selectedCars.push({
                 items: []
             });
             let cell = table.rows[r].cells;
@@ -184,12 +184,9 @@
 
                 let tmpInputElem;
 
-                if (isInput)
-                {
+                if (isInput) {
                     tmpInputElem = cell[c].children[0].checked;
-                }
-                else
-                {
+                } else {
                     tmpInputElem = cell[c].innerHTML;
                 }
 
@@ -202,7 +199,7 @@
     $('#btnMakeRent').click(function () {
         let carDriverList = [];
 
-        let rentStart = {
+        let rent = {
             rentDurationPlan: "",
             startDate: "",
             endDate: "",
@@ -227,27 +224,44 @@
             carDriverList.push(carDriver);
         }
 
-        rentStart.rentDurationPlan = rentDurationPlan;
-        rentStart.startDate = startDate;
-        rentStart.endDate = endDate;
-        rentStart.username = username;
-        rentStart.carDriverList = carDriverList;
+        rent.rentDurationPlan = rentDurationPlan;
+        rent.startDate = startDate;
+        rent.endDate = endDate;
+        rent.username = username;
+        rent.carDriverList = carDriverList;
 
-        console.log(rentStart);
+        console.log(rent);
 
-        $.ajax({
-            url: 'http://localhost:8080/rental/rent/rent',
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(rentStart),
-            dataType: 'json',
-            success: function (resp) {
-            },
-            error: function (error) {
-                let cause = JSON.parse(error.responseText).message;
-                alert(cause);
+        let rental = {
+            id: -1
+        }
+
+        async function asyncSaveRent() {
+            try {
+                const res = await $.ajax({
+                    url: 'http://localhost:8080/rental/rent/rent',
+                    method: 'post',
+                    contentType: 'application/json',
+                    data: JSON.stringify(rent),
+                    dataType: 'json',
+                    success: function (resp) {
+                        console.log(resp);
+                        rental.id = resp.data;
+                    },
+                    error: function (error) {
+                        let cause = JSON.parse(error.responseText).message;
+                        alert(cause);
+                    }
+                }).then(() => {
+                    localStorage.setItem("rental", JSON.stringify(rental));
+                    location.href = "customerrentsummary.html";
+                });
+            } catch (err) {
+                console.log(err);
             }
-        });
+        }
+
+        asyncSaveRent();
 
         alert("The rental is pending for approval");
 

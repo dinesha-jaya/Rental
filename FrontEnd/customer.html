@@ -67,7 +67,7 @@
 <script>
     let credentials = null;
 
-    function checkLocalStorage() {
+    function checkCustomerLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
@@ -82,7 +82,7 @@
         }
     }
 
-    checkLocalStorage();
+    checkCustomerLocalStorage();
 
     $('#btnCustomerLoginOut').click(function () {
         if ($('#btnLoginOut').innerHTML == "Logout") {

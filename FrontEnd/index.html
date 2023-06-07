@@ -42,7 +42,7 @@
 <script>
     let credentials = null;
 
-    function checkLocalStorage() {
+    function checkIndexLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
@@ -53,11 +53,12 @@
         if (credentials != null) {
             $('#lnkIndexRent').css("display", "block");
             $('#btnLoginOut').html("Logout");
+            $('#btnPricing').html("Rent");
             //localStorage.removeItem("credentials");
         }
     }
 
-    checkLocalStorage();
+    checkIndexLocalStorage();
 
     $('#btnLoginOut').click(function () {
         if ($('#btnLoginOut').innerHTML == "Logout") {

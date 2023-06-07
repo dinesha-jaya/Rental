@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Car Rental - Admin Dashboard</title>
+</head>
+<body class="container">
+
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-5 text-dark text-decoration-none"
+       href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkAdminDBRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" id="btnAdminDBLoginOut" type="button">Login</button>
+    </div>
+</header>
+
+<form class="row g-3" id="customerrentsummaryform">
+    <div class="col-12">
+        <label class="form-label fw-bolder fs-5" for="customerrentsummaryform">Rent Summary</label>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Address</th>
+            <th scope="col">Contact No</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Approximate End Date</th>
+            <th scope="col">Rent Duration Plan</th>
+        </tr>
+        </thead>
+        <tbody id="tblCustomerRentSummary">
+        </tbody>
+    </table>
+
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Accordion Item #1
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script>
+    let credentials = null;
+    let rental = null;
+
+    function checkCustomerRentSummaryLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+            rental = JSON.parse(localStorage.getItem("rental"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+        console.log(rental);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnCustomerLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+        }
+    }
+    checkCustomerRentSummaryLocalStorage();
+
+    let customerRent = {
+        email: "",
+        rentId: -1
+    }
+
+    customerRent.email = credentials.username;
+    customerRent.rentId = rental.id;
+
+    console.log(customerRent);
+
+
+
+    $.ajax({
+        url: 'http://localhost:8080/rental/customer/rentSummary',
+        method: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify(customerRent),
+        dataType: "json",
+        success: function (resp) {
+            console.log(resp.data);
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+
+</script>
+
+</body>
+</html>

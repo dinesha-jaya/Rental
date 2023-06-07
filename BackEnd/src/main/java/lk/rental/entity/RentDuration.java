@@ -20,6 +20,6 @@ public class RentDuration {
     private int freeKms;
     private double pricePerExtraKm;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Car car;
 }

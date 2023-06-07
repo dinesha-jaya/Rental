@@ -167,25 +167,25 @@ INSERT INTO rentDuration VALUES(97, 100, 100, 18000, "daily", 49),
 
 --
 
-INSERT INTO user VALUES(1, "1234", "admin", "admin@rental.lk"),
-                        (2, "1234", "driver", "nimal@rental.lk"),
-                        (3, "1234", "driver", "amal@rental.lk"),
-                        (4, "1234", "driver", "sunimal@rental.lk"),
-                        (5, "1234", "driver", "kamal@rental.lk"),
-                        (6, "1234", "driver", "namal@rental.lk"),
-                        (7, "1234", "driver", "saman@rental.lk"),
-                        (8, "1234", "driver", "sanath@rental.lk"),
-                        (9, "1234", "driver", "nipun@rental.lk");
+INSERT INTO user VALUES(1, "1234", "admin", "admin@rent.lk"),
+                        (2, "1234", "driver", "nimal@rent.lk"),
+                        (3, "1234", "driver", "amal@rent.lk"),
+                        (4, "1234", "driver", "sunimal@rent.lk"),
+                        (5, "1234", "driver", "kamal@rent.lk"),
+                        (6, "1234", "driver", "namal@rent.lk"),
+                        (7, "1234", "driver", "saman@rent.lk"),
+                        (8, "1234", "driver", "sanath@rent.lk"),
+                        (9, "1234", "driver", "nipun@rent.lk");
 
 
 
-INSERT INTO driver VALUES(1, "0771234567", "nimal@rental.lk", true, "Nimal", "available", 2),
-                            (2, "0772234567", "amal@rental.lk", true, "Amal", "available", 3),
-                            (3, "0773234567", "sunimal@rental.lk", true, "Sunimal", "available", 4),
-                            (4, "0774234567", "kamal@rental.lk", true, "Kamal", "available", 5),
-                            (5, "0775234567", "namal@rental.lk", true, "Namal", "available", 6),
-                            (6, "0776234567", "saman@rental.lk", true, "Saman", "available", 7),
-                            (7, "0777234567", "sanath@rental.lk", true, "Sanath", "available", 8),
-                            (8, "0778234567", "nipun@rental.lk", true, "Nipun", "available", 9);
+INSERT INTO driver VALUES(1, "0771234567", "nimal@rent.lk", true, "Nimal", "available", 2),
+                            (2, "0772234567", "amal@rent.lk", true, "Amal", "available", 3),
+                            (3, "0773234567", "sunimal@rent.lk", true, "Sunimal", "available", 4),
+                            (4, "0774234567", "kamal@rent.lk", true, "Kamal", "available", 5),
+                            (5, "0775234567", "namal@rent.lk", true, "Namal", "available", 6),
+                            (6, "0776234567", "saman@rent.lk", true, "Saman", "available", 7),
+                            (7, "0777234567", "sanath@rent.lk", true, "Sanath", "available", 8),
+                            (8, "0778234567", "nipun@rent.lk", true, "Nipun", "available", 9);
 
 --
