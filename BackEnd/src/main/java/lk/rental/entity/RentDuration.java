@@ -8,7 +8,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+//@ToString
 @Entity
 public class RentDuration {
 

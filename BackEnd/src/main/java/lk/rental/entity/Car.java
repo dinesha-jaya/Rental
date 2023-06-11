@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+//@ToString
 @NamedNativeQuery(name = "Car.findPricingDto",
         query = "SELECT DISTINCT brand, rentDurationType, rate, noOfPassengers, freeKms, pricePerExtraKm FROM (SELECT * FROM car INNER JOIN rentDuration on carId = car_carId WHERE type = ?1) as pricing",
         resultSetMapping = "Mapping.PricingDTO")

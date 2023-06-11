@@ -16,7 +16,6 @@ public class RentDTO {
     private String rentDurationPlan;
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalDate actualEndDate;
     private double amount;
     private String status;
     private String remarks;

@@ -1,8 +1,8 @@
 package lk.rental.service.impl;
 
 import lk.rental.dto.CarDriverDTO;
-import lk.rental.dto.RentStartDTO;
 import lk.rental.dto.RentDTO;
+import lk.rental.dto.RentStartDTO;
 import lk.rental.entity.*;
 import lk.rental.repo.*;
 import lk.rental.service.RentService;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -32,20 +33,7 @@ public class RentServiceImpl implements RentService {
     private CustomerRepo customerRepo;
 
     @Autowired
-    private RentDurationRepo rentDurationRepo;
-
-    @Autowired
     private ModelMapper modelMapper;
-
-    @Override
-    public void addRental(RentDTO rentDTO) {
-//        if (rentalRepo.existsById(rentalDTO.getRentalId())) {
-//            throw new RuntimeException(("Rental " + rentalDTO.getRentalId() + " already exists"));
-//        }
-
-        rentRepo.save(modelMapper.map(rentDTO, Rent.class));
-
-    }
 
     @Override
     public long addRent(RentStartDTO rentStartDTO) {
@@ -58,8 +46,8 @@ public class RentServiceImpl implements RentService {
 
         Rent rent = new Rent();
         rent.setRentDurationPlan(rentDurationPlan);
-        rent.setStartDate(startDate);
-        rent.setEndDate(endDate);
+        rent.setStartDate(Date.valueOf(startDate));
+        rent.setEndDate(Date.valueOf(endDate));
         rent.setStatus("pending");
         rent.setCustomer(customer);
 
@@ -73,7 +61,12 @@ public class RentServiceImpl implements RentService {
             rentHasCar.setDriverOption(carDriverDTO.isDriverOption());
 
             if (carDriverDTO.isDriverOption()) {
-                rentHasCar.setDriver(driverRepo.getAvailableDriver());
+
+                Driver availableDriver = driverRepo.getAvailableDriver();
+                rentHasCar.setDriver(availableDriver);
+                availableDriver.setStatus("occupied");
+
+
             }
 
             setStatus(carDriverDTO.getRegistrationNo(), "rent");
@@ -114,7 +107,7 @@ public class RentServiceImpl implements RentService {
 
     private void setStatusAll(String status) {
         ArrayList<Car> allCars = (ArrayList<Car>) carRepo.findAll();
-        for (Car car: allCars) {
+        for (Car car : allCars) {
             if (car.getStatus().equalsIgnoreCase("flag")) {
                 car.setStatus(status);
                 carRepo.save(car);

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -101,8 +102,23 @@ public class CustomerServiceImpl implements CustomerService {
 
 //        System.out.println(rent.getStartDate());
 
-        LocalDate rentStartDate = rent.getStartDate();
-        LocalDate rentEndDate = rent.getEndDate();
+        LocalDate rentStartDate = rent.getStartDate().toLocalDate();
+        System.out.println(rentStartDate);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd");
+//        String text = rentStartDate.format(formatter);
+//        LocalDate parsedRentStartDate = LocalDate.parse(text, formatter);
+//        System.out.println(parsedRentStartDate);
+
+
+        LocalDate rentEndDate = rent.getEndDate().toLocalDate();
+        System.out.println(rentEndDate);
+//        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy MM dd");
+//        String text1 = rentEndDate.format(formatter);
+//        System.out.println(text1);
+//        LocalDate parsedRentEndDate = LocalDate.parse(text1, formatter1);
+//        System.out.println(parsedRentStartDate);
+
+
         String rentDurationPlan = rent.getRentDurationPlan();
 
         List<RentHasCar> rentHasCars = rent.getRentHasCars();

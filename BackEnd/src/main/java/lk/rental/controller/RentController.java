@@ -3,6 +3,9 @@ package lk.rental.controller;
 import lk.rental.dto.CarDTO;
 import lk.rental.dto.RentStartDTO;
 import lk.rental.dto.RentDTO;
+import lk.rental.dto.SearchCarDTO;
+import lk.rental.entity.Car;
+import lk.rental.entity.Rent;
 import lk.rental.service.CarService;
 import lk.rental.service.RentService;
 import lk.rental.util.ResponseUtil;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/rent")
@@ -21,12 +25,6 @@ public class RentController {
 
     @Autowired
     private CarService carService;
-
-    @PostMapping
-    public ResponseUtil saveRental(@ModelAttribute RentDTO rentDTO) {
-        rentService.addRental(rentDTO);
-        return new ResponseUtil("200", " Added.!", null);
-    }
 
     @GetMapping
     public ResponseUtil getAllRentals() {
@@ -40,9 +38,10 @@ public class RentController {
         return new ResponseUtil("200", " Added.!", rentId);
     }
 
-    @GetMapping(params = {"type"})
-    public ResponseUtil getAvailableCars(@RequestParam("type") String carType) {
-        ArrayList<CarDTO> availableCars = carService.getAvailableCars(carType);
+    @PostMapping("/search")
+    public ResponseUtil getAvailableCars(@RequestBody SearchCarDTO searchCarDTO) {
+        System.out.println(searchCarDTO);
+        List<Car> availableCars = carService.getAvailableCars(searchCarDTO);
         return new ResponseUtil("200", " Success.!", availableCars);
     }
 

@@ -26,19 +26,6 @@
         <label class="form-label fw-bolder fs-5" for="makeRentForm">Make Rent</label>
     </div>
     <div class="col-md-4">
-        <label class="form-label" for="inputCarType">Car Type</label>
-        <select class="form-select" id="inputCarType" name="inputCarType">
-            <option>General</option>
-            <option>Premium</option>
-            <option>Luxury</option>
-        </select>
-    </div>
-    <div class="col-md-8">
-        <label class="form-label" for="inputCars">Car</label>
-        <select class="form-select" id="inputCars" name="inputCars">
-        </select>
-    </div>
-    <div class="col-md-4">
         <label class="form-label" for="inputRentDurationPlan">Rent Duration Plan</label>
         <select class="form-select" id="inputRentDurationPlan" name="inputRentDurationPlan">
             <option>Daily</option>
@@ -50,8 +37,21 @@
         <input class="form-control" id="inputStartDate" name="inputStartDate" type="date">
     </div>
     <div class="col-md-4">
-        <label class="form-label" for="inputEndDate">Tentative End Date</label>
+        <label class="form-label" for="inputEndDate">End Date</label>
         <input class="form-control" id="inputEndDate" name="inputEndDate" type="date">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label" for="inputCarType">Car Type</label>
+        <select class="form-select" id="inputCarType" name="inputCarType">
+            <option>General</option>
+            <option>Premium</option>
+            <option>Luxury</option>
+        </select>
+    </div>
+    <div class="col-md-8">
+        <label class="form-label" for="inputCars">Car</label>
+        <select class="form-select" id="inputCars" name="inputCars">
+        </select>
     </div>
     <table class="table">
         <thead>
@@ -93,9 +93,13 @@
 
     checkLocalStorage();
 
-    function loadAvailableCars(carType) {
+    function loadAvailableCars(searchCars) {
+        console.log(searchCars);
         $.ajax({
-            url: 'http://localhost:8080/rental/rent?type=' + carType,
+            url: 'http://localhost:8080/rental/rent/search',
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(searchCars),
             dataType: 'json',
             success: function (resp) {
                 for (let car of resp.data) {
@@ -108,8 +112,17 @@
 
     $('#inputCarType').change(function () {
         let carType = $(this).val().toLowerCase();
+        let startDate = $('#inputStartDate').val();
+        let endDate = $('#inputEndDate').val();
+
+        let searchCars = {
+            startDate: startDate,
+            endDate: endDate,
+            carType: carType
+        }
+
         $('#inputCars').empty();
-        loadAvailableCars(carType);
+        loadAvailableCars(searchCars);
     });
 
 

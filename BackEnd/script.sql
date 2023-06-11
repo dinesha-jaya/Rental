@@ -176,6 +176,7 @@ INSERT INTO user VALUES(1, "1234", "admin", "admin@rent.lk"),
                         (7, "1234", "driver", "saman@rent.lk"),
                         (8, "1234", "driver", "sanath@rent.lk"),
                         (9, "1234", "driver", "nipun@rent.lk");
+--                         (10, "1234", "customer", "d@gmail.com");
 
 
 
@@ -189,3 +190,20 @@ INSERT INTO driver VALUES(1, "0771234567", "nimal@rent.lk", true, "Nimal", "avai
                             (8, "0778234567", "nipun@rent.lk", true, "Nipun", "available", 9);
 
 --
+
+-- INSERT INTO customer VALUES(1, "malabe", "123456", "d@gmail.com", "dinesha", TRUE, 'Driver License', 'jayawardana', 10);
+--
+--
+--
+-- --
+--
+-- INSERT INTO rentHasCar VALUES(1, TRUE, )
+--
+--
+--
+-- --
+--
+--
+-- INSERT INTO rent VALUES(1, 0, '2023-06-22', NULL, '2023-06-08', 'pending', 1),
+--                         (2, 0, '2023-06-15', NULL, 2023-06-09, 'pending', 1),
+--                         (1, 0, '2023-06-29', NULL, 2023-06-12, 'pending', 1);

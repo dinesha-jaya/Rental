@@ -7,8 +7,6 @@ import java.util.ArrayList;
 
 public interface RentService {
 
-    void addRental(RentDTO rentDTO);
-
     long addRent(RentStartDTO rentStartDTO);
 
     ArrayList<RentDTO> getAllRentals();

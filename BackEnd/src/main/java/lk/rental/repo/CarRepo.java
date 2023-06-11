@@ -16,10 +16,12 @@ public interface CarRepo extends JpaRepository<Car, Long> {
     @Query(nativeQuery = true)
     List<PricingDTO> findPricingDto(String carType);
 
-    @Query(value = "SELECT * FROM car c WHERE c.type = :t and c.status = 'available'", nativeQuery = true)
+    @Query(value = "SELECT * FROM car c WHERE c.type = :t", nativeQuery = true)
     List<Car> getAvailableCarsByType(@Param("t") String type);
 
     Car findByRegistrationNo(String registrationNo);
+
+    Car findCarByCarId(long id);
 //
 //    @Modifying
 //    @Query(value = "UPDATE car SET status = 'rent' WHERE registrationNo = :regNo", nativeQuery = true)
