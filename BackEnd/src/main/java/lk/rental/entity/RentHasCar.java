@@ -15,8 +15,8 @@ public class RentHasCar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long rentalHasCarId;
-    private int meterStart;
-    private int meterEnd;
+    private long meterStart;
+    private long meterEnd;
     private boolean driverOption;
     private boolean lossDamageWaiverPaymentReceipt;
     private double lossDamageWaiverPaymentCharge;

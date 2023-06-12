@@ -30,12 +30,10 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">Rental Id</th>
+            <th scope="col">Rent Id</th>
             <th scope="col">Rent Duration Plan</th>
             <th scope="col">Start Date</th>
-            <th scope="col">Approximate End Date</th>
-            <th scope="col">Actual End Date</th>
-            <th scope="col">Remarks</th>
+            <th scope="col">End Date</th>
             <th scope="col">Status</th>
         </tr>
         </thead>
@@ -49,7 +47,7 @@
     let credentials = null;
 
     function checkUser(username) {
-        if (username !== "admin@rental.lk") {
+        if (username !== "admin@rent.lk") {
             location.href = "index.html";
         }
     }
@@ -79,15 +77,20 @@
                 url: 'http://localhost:8080/rental/rent',
                 dataType: 'json',
                 success: function (resp) {
-                    for (let rental of resp.data) {
+                    for (let rent of resp.data) {
+                        console.log(rent);
+                        let startDate = new Date(rent.startDate);
+                        let rentStartDate = startDate.toDateString();
+
+                        let endDate = new Date(rent.endDate);
+                        let rentEndDate = endDate.toDateString();
+
                         let row = `<tr>
-                        <td>${rental.rentalId}</td>
-                        <td>${rental.rentDurationPlan}</td>
-                        <td>${rental.startDate}</td>
-                        <td>${rental.endDate}</td>
-                        <td>${rental.actualEndDate}</td>
-                        <td>${rental.remarks}</td>
-                        <td>${rental.status}</td>
+                        <td>${rent.rentId}</td>
+                        <td>${rent.rentDurationPlan}</td>
+                        <td>${rentStartDate}</td>
+                        <td>${rentEndDate}</td>
+                        <td>${rent.status}</td>
                         </tr>`;
                         $('#tblRentals').append(row);
                     }
@@ -99,27 +102,32 @@
 
         }
     }
+    //
+    // function redirectToRentStart(rentId) {
+    //     $.ajax({
+    //         url: 'http://localhost:8080/rental/rent?rentId=' + rentId,
+    //         dataType: 'json',
+    //         success: function () {
+    //             location.href = "rentsummary.html";
+    //         }
+    //     });
+    // }
 
-    function redirectToRentStart(rentalId) {
-        $.ajax({
-            url: 'http://localhost:8080/rental/rent?rentalId=' + rentalId,
-            dataType: 'json',
-            success: function () {
-                location.href = "rentstart.html";
-            }
-        });
+    let rental = {
+        id: -1
     }
 
     function bindTblRentalsRowClickEvents() {
         $('#tblRentals > tr').click(function () {
             let rentalId = $(this).children().eq(0).text();
-            let status = $(this).children().eq(6).text();
+            //let status = $(this).children().eq(4).text();
+            rental.id = rentalId;
 
-            console.log(status);
-            console.log(rentalId);
-            if (status == "pending") {
-                redirectToRentStart(rentalId);
+            if (localStorage.getItem("rental") != null) {
+                localStorage.removeItem("rental");
             }
+            localStorage.setItem("rental", JSON.stringify(rental));
+            location.href = "rentsummary.html";
         });
     }
 

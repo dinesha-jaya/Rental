@@ -206,6 +206,7 @@
                 selectedCars[r].items.push(tmpInputElem);
             }
         }
+        console.log(selectedCars);
         return selectedCars;
     }
 
@@ -266,8 +267,11 @@
                         alert(cause);
                     }
                 }).then(() => {
+                    if (localStorage.getItem("rental") != null) {
+                        localStorage.removeItem("rental");
+                    }
                     localStorage.setItem("rental", JSON.stringify(rental));
-                    location.href = "customerrentsummary.html";
+                    location.href = "rentsummary.html";
                 });
             } catch (err) {
                 console.log(err);

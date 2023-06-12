@@ -44,10 +44,18 @@
         let username = $('#floatingInput').val();
         let password = $('#floatingPassword').val();
 
+        let userCategory;
+
+        if (username === "admin@rent.lk") {
+            userCategory = "admin";
+        } else {
+            userCategory = "customer";
+        }
+
         let user = {
             username: username,
             password: password,
-            userCategory: 'customer'
+            userCategory: userCategory
         }
 
         let credentials;
@@ -74,7 +82,11 @@
                     }
                 }).then(() => {
                     localStorage.setItem("credentials", JSON.stringify(credentials));
-                    location.href = "index.html";
+                    if (credentials.username === "admin@rent.lk" && credentials.userCategory === "admin") {
+                        location.href = "admindashboard.html";
+                    } else {
+                        location.href = "index.html";
+                    }
                 });
             } catch (err) {
                 console.log(err);

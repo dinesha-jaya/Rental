@@ -1,8 +1,8 @@
 package lk.rental.dto;
 
+
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 @NoArgsConstructor
@@ -12,11 +12,13 @@ import java.util.ArrayList;
 @ToString
 public class RentStartDTO {
 
-    private String rentDurationPlan;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String username;
+    private long rentId;
+    private String status;
+    private String remarks;
 
-    ArrayList<CarDriverDTO> carDriverList;
+    private ArrayList<RentStartCarDTO> rentStartCarDTOs = new ArrayList<>();
+
+
+
 
 }

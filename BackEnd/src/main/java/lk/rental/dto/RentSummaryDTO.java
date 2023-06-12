@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @ToString
-public class CustomerRentResponseDTO {
+public class RentSummaryDTO {
 
     private String customerFirstName;
     private String customerLastName;
@@ -20,6 +20,7 @@ public class CustomerRentResponseDTO {
     private LocalDate rentStartDate;
     private LocalDate rentEndDate;
     private String rentDurationPlan;
+    private String rentStatus;
 
     ArrayList<RentCarDTO> rentCarDTOs = new ArrayList<>();
 

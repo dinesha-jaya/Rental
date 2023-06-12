@@ -12,8 +12,8 @@ public abstract class RentHasCar_ {
 	public static volatile SingularAttribute<RentHasCar, Long> rentalHasCarId;
 	public static volatile SingularAttribute<RentHasCar, Driver> driver;
 	public static volatile SingularAttribute<RentHasCar, Car> car;
-	public static volatile SingularAttribute<RentHasCar, Integer> meterEnd;
-	public static volatile SingularAttribute<RentHasCar, Integer> meterStart;
+	public static volatile SingularAttribute<RentHasCar, Long> meterEnd;
+	public static volatile SingularAttribute<RentHasCar, Long> meterStart;
 	public static volatile SingularAttribute<RentHasCar, Boolean> lossDamageWaiverPaymentReceipt;
 	public static volatile SingularAttribute<RentHasCar, Rent> rent;
 	public static volatile SingularAttribute<RentHasCar, Boolean> driverOption;

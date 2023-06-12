@@ -10,8 +10,8 @@ import lombok.*;
 public class RentHasCarDTO {
 
 //    private long rentalHasCarId;
-    private int meterStart;
-    private int meterEnd;
+    private long meterStart;
+    private long meterEnd;
     private boolean driverOption;
     private boolean lossDamageWaiverPaymentReceipt;
     private double lossDamageWaiverPaymentCharge;

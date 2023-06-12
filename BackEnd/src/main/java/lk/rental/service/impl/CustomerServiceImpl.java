@@ -1,8 +1,7 @@
 package lk.rental.service.impl;
 
 import lk.rental.dto.CustomerDTO;
-import lk.rental.dto.CustomerRentRequestDTO;
-import lk.rental.dto.CustomerRentResponseDTO;
+import lk.rental.dto.RentSummaryDTO;
 import lk.rental.dto.RentCarDTO;
 import lk.rental.entity.*;
 import lk.rental.repo.CustomerRepo;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -31,12 +29,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private UserRepo userRepo;
-
-    @Autowired
-    private RentRepo rentRepo;
-
-    @Autowired
-    private RentDurationRepo rentDurationRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -77,114 +69,5 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-    @Override
-    public CustomerRentResponseDTO customerRentSummary(CustomerRentRequestDTO customerRentRequestDTO) {
-        CustomerRentResponseDTO customerRentResponseDTO = new CustomerRentResponseDTO();
 
-        String email = customerRentRequestDTO.getEmail();
-        long rentId = customerRentRequestDTO.getRentId();
-
-        Customer customer = customerRepo.findByEmail(email);
-
-        String customerFirstName = customer.getFirstName();
-        String customerLastName = customer.getLastName();
-        String customerAddress = customer.getAddress();
-        String customerContactNo = customer.getContactNo();
-
-        long customerId = customer.getCustomerId();
-
-        System.out.println(customerId);
-        System.out.println(rentId);
-
-        Rent rent = rentRepo.findByRentId(rentId);
-
-        System.out.println(rent);
-
-//        System.out.println(rent.getStartDate());
-
-        LocalDate rentStartDate = rent.getStartDate().toLocalDate();
-        System.out.println(rentStartDate);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd");
-//        String text = rentStartDate.format(formatter);
-//        LocalDate parsedRentStartDate = LocalDate.parse(text, formatter);
-//        System.out.println(parsedRentStartDate);
-
-
-        LocalDate rentEndDate = rent.getEndDate().toLocalDate();
-        System.out.println(rentEndDate);
-//        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy MM dd");
-//        String text1 = rentEndDate.format(formatter);
-//        System.out.println(text1);
-//        LocalDate parsedRentEndDate = LocalDate.parse(text1, formatter1);
-//        System.out.println(parsedRentStartDate);
-
-
-        String rentDurationPlan = rent.getRentDurationPlan();
-
-        List<RentHasCar> rentHasCars = rent.getRentHasCars();
-
-        ArrayList<RentCarDTO> rentCarDTOs = new ArrayList<>();
-
-        for (RentHasCar rentHasCar: rentHasCars) {
-            RentCarDTO rentCarDTO = new RentCarDTO();
-            Car car = rentHasCar.getCar();
-
-            String brand = car.getBrand();
-            String fuelType = car.getFuelType();
-            int noOfPassengers = car.getNoOfPassengers();
-            String registrationNo = car.getRegistrationNo();
-            String transmissionType = car.getTransmissionType();
-
-            long carId = car.getCarId();
-
-            RentDuration rentDuration = rentDurationRepo.findByRentDurationTypeAndCar_CarId(rentDurationPlan, carId);
-
-            double rate = rentDuration.getRate();
-            int freeKms = rentDuration.getFreeKms();
-            double pricePerExtraKm = rentDuration.getPricePerExtraKm();
-
-            String driverName;
-            String driverContactNo;
-
-            Driver driver = rentHasCar.getDriver();
-
-            if (driver != null) {
-                driverName = driver.getName();
-                driverContactNo = driver.getContactNo();
-            } else {
-                driverName = "Not assigned";
-                driverContactNo = "";
-            }
-
-            rentCarDTO.setBrand(brand);
-            rentCarDTO.setFuelType(fuelType);
-            rentCarDTO.setNoOfPassengers(noOfPassengers);
-            rentCarDTO.setRegistrationNo(registrationNo);
-            rentCarDTO.setTransmissionType(transmissionType);
-
-            rentCarDTO.setRate(rate);
-            rentCarDTO.setFreeKms(freeKms);
-            rentCarDTO.setPricePerExtraKm(pricePerExtraKm);
-
-            rentCarDTO.setDriverName(driverName);
-            rentCarDTO.setDriverContactNo(driverContactNo);
-
-            rentCarDTOs.add(rentCarDTO);
-
-        }
-
-        customerRentResponseDTO.setCustomerFirstName(customerFirstName);
-        customerRentResponseDTO.setCustomerLastName(customerLastName);
-        customerRentResponseDTO.setCustomerAddress(customerAddress);
-        customerRentResponseDTO.setCustomerContactNo(customerContactNo);
-
-        customerRentResponseDTO.setRentStartDate(rentStartDate);
-        customerRentResponseDTO.setRentEndDate(rentEndDate);
-        customerRentResponseDTO.setRentDurationPlan(rentDurationPlan);
-
-        customerRentResponseDTO.setRentCarDTOs(rentCarDTOs);
-
-        return customerRentResponseDTO;
-
-    }
 }

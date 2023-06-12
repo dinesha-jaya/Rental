@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
-public class SearchCarDTO {
+public class CarSearchDTO {
 
     private LocalDate startDate;
     private LocalDate endDate;

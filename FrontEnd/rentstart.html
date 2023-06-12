@@ -7,50 +7,51 @@
 </head>
 <body class="container">
 <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none" href="index.html">Easy
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none"
+       href="index.html">Easy
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentStartRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentStartRent" style="display: none;">Rent</a>
+        </li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" type="button">Login</button>
+        <button class="btn btn-outline-primary me-2" id="btnRentStartLoginOut" type="button">Login</button>
     </div>
 </header>
-<form class="row g-3" id="startRentalForm">
+<form class="row g-3" id="rentStartForm">
+    <div class="col-12">
+        <label class="form-label fw-bolder fs-5" for="rentStartForm" id="lblRentStart"></label>
+    </div>
     <table class="table">
         <thead>
         <tr>
             <th scope="col">Car</th>
+            <th scope="col">Registration No</th>
             <th scope="col">Driver</th>
             <th scope="col">Loss Damage Waiver Payment Receipt Uploaded</th>
             <th scope="col">Meter Start</th>
         </tr>
         </thead>
-        <tbody>
-        <tr>
-            <td></td>
-            <td>
-                <select class="form-select" id="inputChangeDriver">
-                    <option></option>
-                    <option></option>
-                </select>
-            </td>
-            <td>
-                <div class="form-check">
-                    <input class="form-check-input" id="lossDamageWaiverPaymentReceiptCheck" type="checkbox">
-                </div>
-            </td>
-            <td></td>
-        </tr>
+        <tbody id="tblRentStartCarDetails">
+<!--        <tr>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+<!--            <td>-->
+<!--                <div class="form-check">-->
+<!--                    <input class="form-check-input" id="lossDamageWaiverPaymentReceiptCheck" type="checkbox">-->
+<!--                </div>-->
+<!--            </td>-->
+<!--            <td></td>-->
+<!--        </tr>-->
         </tbody>
     </table>
     <div class="col-md-12">
         <div class="form-check">
             <input class="form-check-input" id="cancelRentCheck" type="checkbox">
-            <label class="form-check-label" for="cancelRentCheck">Cancel Rental</label>
+            <label class="form-check-label" for="cancelRentCheck" id="cbCancelRent">Cancel Rental</label>
         </div>
     </div>
     <div class="col-md-6">
@@ -58,9 +59,209 @@
         <textarea class="form-control" id="inputRemarks" type="text"></textarea>
     </div>
     <div class="col-12">
-        <button class="btn btn-primary" type="submit">Rent Start</button>
+        <button class="btn btn-primary" type="button" id="btnRentStart">Rent Start</button>
     </div>
 </form>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+
+
+<script>
+    let credentials = null;
+    let rental = null;
+
+    function checkAdmin(username) {
+        if (username !== "admin@rent.lk") {
+            location.href = "index.html";
+        }
+    }
+
+    function checkRentStartLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+            rental = JSON.parse(localStorage.getItem("rental"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+        console.log(rental);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnRentStartLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+            let username = credentials.username;
+            checkAdmin(username);
+        }
+    }
+
+    checkRentStartLocalStorage();
+
+    function bindTblRentStartCarDetailsRowClickEvents() {
+        $('#tblRentStartCarDetails > tr').click(function () {
+            console.log($(this));
+        });
+    }
+
+    function displayRentStart(data) {
+        let startDate = new Date(data.rentStartDate);
+        let rentStartDate = startDate.toDateString();
+
+        let endDate = new Date(data.rentEndDate);
+        let rentEndDate = endDate.toDateString();
+
+        $('#lblRentStart').html(data.customerFirstName + ' ' + data.customerLastName + ' - ' + data.customerContactNo + ' - ' + rentStartDate + ' to ' + rentEndDate);
+
+        let rentCarDTOs = data.rentCarDTOs;
+
+        let table = document.getElementById("tblRentStartCarDetails");
+
+        for (let car of rentCarDTOs) {
+            let row = table.insertRow(-1);
+            let cell0 = row.insertCell(0);
+            let cell1 = row.insertCell(1);
+            let cell2 = row.insertCell(2);
+            let cell3 = row.insertCell(3);
+            let cell4 = row.insertCell(4);
+
+            let number = document.createElement("input");
+            number.setAttribute("type", "number");
+            number.setAttribute("class", "form-control meterStart");
+
+            let checkBox = document.createElement("input");
+            checkBox.setAttribute("type", "checkbox");
+            checkBox.setAttribute("class", "form-check-input waiver");
+
+            cell0.innerHTML = car.brand;
+            cell1.innerHTML = car.registrationNo;
+            cell2.innerHTML = car.driverName;
+            cell3.appendChild(checkBox);
+            cell4.appendChild(number);
+            // row = `<tr><td>${car.brand}</td><td>${car.registrationNo}</td><td>${car.driverName}</td><td>${checkBox}.value</td><td>${number}.value</td></tr>`;
+            $('#tblRentStartCarDetails').append(row);
+        }
+        bindTblRentStartCarDetailsRowClickEvents();
+    }
+
+
+
+    $.ajax({
+        url: 'http://localhost:8080/rental/rent?rentId=' + rental.id,
+        dataType: 'json',
+        success: function (resp) {
+            console.log(resp);
+            displayRentStart(resp.data);
+        }
+    });
+
+    function getRentCarInfoFromTable() {
+        let table = document.getElementById('tblRentStartCarDetails');
+
+        let selectedCars = [];
+
+        for (let r = 0; r < table.rows.length; r++) {
+            let checkBox = table.rows[r].cells[3].children[0];
+            let checkBoxResponse = checkBox.checked;
+
+            let meter = table.rows[r].cells[4].children[0];
+            let meterResponse = meter.value;
+
+            if (checkBoxResponse && (meterResponse !== "")) {
+                selectedCars.push({
+                    items: []
+                });
+                let cell = table.rows[r].cells;
+
+                for (let c = 0; c < cell.length; c++) {
+                    let inputElem = cell[c].children[0];
+                    // console.log(inputElem);
+
+                    let isInput = inputElem instanceof HTMLInputElement;
+                    // console.log("isInput" + isInput);
+
+                    let tmpInputElem;
+
+                    if (isInput) {
+                        tmpInputElem = cell[c].children[0].value;
+                    } else {
+                        tmpInputElem = cell[c].innerHTML;
+                    }
+
+                    // console.log(tmpInputElem);
+
+                    // let tmpInputElem;
+                    //
+                    // if (inputElem.getAttribute("class") === "meterStart") {
+                    //     tmpInputElem = cell[c].children[0].innerHTML
+                    // } else if (inputElem.getAttribute("class") === "waiver") {
+                    //     tmpInputElem = cell[c].children[0].checked;
+                    // } else {
+                    //     tmpInputElem = cell[c].innerHTML;
+                    // }
+                    //
+                    selectedCars[r].items.push(tmpInputElem);
+                }
+            } else {
+                alert("All Cars must submit the Loss Damage Waiver Payment Receipt and have a Meter Start Reading");
+                break;
+            }
+
+
+        }
+        console.log(selectedCars);
+        return selectedCars;
+
+    }
+
+    $('#btnRentStart').click(function () {
+        let cancelRent = $('#cbCancelRent').checked;
+        let rentRemarks = $('#inputRemarks').val();
+
+        let rentStartCarList = [];
+
+        let rentStart = {
+            rentId: rental.id,
+            status: "rent",
+            remarks: rentRemarks,
+            rentStartCars: []
+        };
+
+        if (cancelRent) {
+            rentStart.status = "cancel";
+            $.ajax({
+                url: 'http://localhost:8080/rental/rent/cancel',
+                method: "put",
+                contentType: 'application/json',
+                data: JSON.stringify(rentStart)
+            });
+        } else {
+            let rentStartCar = {
+                registrationNo: "",
+                lossDamageWaiverPaymentReceipt: false,
+                meterStart: 0
+            }
+            let rentCarInfoFromTable = getRentCarInfoFromTable();
+
+            for (let car of rentCarInfoFromTable) {
+                rentStartCar.registrationNo = car.items[1];
+                rentStartCar.lossDamageWaiverPaymentReceipt = true;
+                rentStartCar.meterStart = parseInt(car.items[3]);
+
+                rentStartCarList.push(rentStartCar);
+            }
+            rentStart.rentStartCars = rentStartCarList;
+
+            console.log(rentStart);
+
+            $.ajax({
+                url: 'http://localhost:8080/rental/rent',
+                method: 'put',
+                contentType: 'application/json',
+                data: JSON.stringify(rentStart)
+            });
+        }
+    });
+
+</script>
 </body>
 </html>

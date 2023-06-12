@@ -14,18 +14,18 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkAdminDBRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentSummaryRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnCustomerRentSummaryLoginOut" type="button">Login</button>
+        <button class="btn btn-outline-primary me-2" id="btnRentSummaryLoginOut" type="button">Login</button>
     </div>
 </header>
 
-<form class="row g-3" id="customerRentSummaryForm">
+<form class="row g-3" id="rentSummaryForm">
     <div class="col-12">
-        <label class="form-label fw-bolder fs-5" for="customerRentSummaryForm" id="lblCustomerRentSummary">Rent
+        <label class="form-label fw-bolder fs-5" for="rentSummaryForm" id="lblRentSummary">Rent
             Summary</label>
     </div>
     <div class="col-12">
@@ -39,7 +39,7 @@
                 <th scope="col">Rent Duration Plan</th>
             </tr>
             </thead>
-            <tbody id="tblCustomerRentSummary">
+            <tbody id="tblRentSummary">
             </tbody>
         </table>
     </div>
@@ -64,9 +64,13 @@
                 <th scope="col">Driver Contact No</th>
             </tr>
             </thead>
-            <tbody id="tblCustomerRentedCarsSummary">
+            <tbody id="tblRentedCarsSummary">
             </tbody>
         </table>
+    </div>
+
+    <div class="col-12" id="divRentSummary">
+
     </div>
 
 
@@ -77,7 +81,7 @@
     let credentials = null;
     let rental = null;
 
-    function checkCustomerRentSummaryLocalStorage() {
+    function checkRentSummaryLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
             rental = JSON.parse(localStorage.getItem("rental"));
@@ -89,15 +93,15 @@
 
         if (credentials != null) {
             // $('#lnkRent').css("display", "block");
-            $('#btnCustomerRentSummaryLoginOut').html("Logout");
+            $('#btnRentSummaryLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
         }
     }
 
-    checkCustomerRentSummaryLocalStorage();
+    checkRentSummaryLocalStorage();
 
-    function displayCustomerRentSummary(data) {
-        $('#lblCustomerRentSummary').html('Rent Summary - ' + data.customerFirstName + ' ' + data.customerLastName);
+    function displayRentSummary(data) {
+        $('#lblRentSummary').html('Rent Summary - ' + data.customerFirstName + ' ' + data.customerLastName + ' - ' + data.rentStatus.toUpperCase());
         let startDate = new Date(data.rentStartDate);
         let rentStartDate = startDate.toDateString();
 
@@ -105,37 +109,32 @@
         let rentEndDate = endDate.toDateString();
 
         let row = `<tr><td>${data.customerAddress}</td><td>${data.customerContactNo}</td><td>${rentStartDate}</td><td>${rentEndDate}</td><td>${data.rentDurationPlan}</td></tr>`;
-        $('#tblCustomerRentSummary').append(row);
+        $('#tblRentSummary').append(row);
 
 
         let rentCarDTOs = data.rentCarDTOs;
         for (let car of rentCarDTOs) {
             let row = `<tr><td>${car.brand}</td><td>${car.registrationNo}</td><td>${car.noOfPassengers}</td><td>${car.transmissionType}</td><td>${car.fuelType}</td><td>${car.rate}</td><td>${car.freeKms}</td><td>${car.pricePerExtraKm}</td><td>${car.driverName}</td><td>${car.driverContactNo}</td></tr>`;
-            $('#tblCustomerRentedCarsSummary').append(row);
+            $('#tblRentedCarsSummary').append(row);
 
+        }
+
+        if (credentials.userCategory === "admin") {
+            let btnToRent = $('<button class="btn btn-primary" id="btnProceedToRent" type="button">Proceed to Rent</button>');
+            $('#divRentSummary').append(btnToRent);
         }
     }
 
-    let customerRent = {
-        email: "",
-        rentId: -1
-    }
-
-    customerRent.email = credentials.username;
-    customerRent.rentId = rental.id;
-
-    console.log(customerRent);
-
+    $('#divRentSummary').on('click', '#btnProceedToRent', function () {
+        location.href = "rentStart.html";
+    })
 
     $.ajax({
-        url: 'http://localhost:8080/rental/customer/rentSummary',
-        method: 'post',
-        contentType: 'application/json',
-        data: JSON.stringify(customerRent),
+        url: 'http://localhost:8080/rental/rent?rentId=' + rental.id,
         dataType: "json",
         success: function (resp) {
             console.log(resp.data);
-            displayCustomerRentSummary(resp.data);
+            displayRentSummary(resp.data);
         },
         error: function (error) {
             alert(error);

@@ -17,10 +17,6 @@ public class Driver {
     private long driverId;
     private String name;
     private boolean license;
-    private String email;
     private String contactNo;
     private String status;
-
-    @OneToOne(cascade = {CascadeType.ALL})
-    private User user;
 }

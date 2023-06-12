@@ -3,7 +3,7 @@ package lk.rental.service.impl;
 import lk.rental.dto.CarDTO;
 import lk.rental.dto.PricingDTO;
 import lk.rental.dto.RentedCarDetailDTO;
-import lk.rental.dto.SearchCarDTO;
+import lk.rental.dto.CarSearchDTO;
 import lk.rental.entity.Car;
 import lk.rental.repo.CarRepo;
 import lk.rental.repo.RentRepo;
@@ -63,11 +63,11 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> getAvailableCars(SearchCarDTO searchCarDTO) {
-        LocalDate startDate = searchCarDTO.getStartDate();
+    public List<Car> getAvailableCars(CarSearchDTO carSearchDTO) {
+        LocalDate startDate = carSearchDTO.getStartDate();
 //        System.out.println(startDate);
-        LocalDate endDate = searchCarDTO.getEndDate().plusDays(1);
-        String type = searchCarDTO.getCarType();
+        LocalDate endDate = carSearchDTO.getEndDate().plusDays(1);
+        String type = carSearchDTO.getCarType();
 
 
         List<RentedCarDetailDTO> rentedCarDetails = rentRepo.findRentedCarDetail();
@@ -75,30 +75,32 @@ public class CarServiceImpl implements CarService {
 
         ArrayList<String> registrationNos = new ArrayList<>();
 
-        for (LocalDate currentDate = startDate; currentDate.isBefore(endDate); currentDate = currentDate.plusDays(1)) {
-            System.out.println("current " + currentDate);
-            System.out.println();
-            for (RentedCarDetailDTO rentedCarDetailDTO : rentedCarDetails) {
+        if (rentedCarDetails != null) {
+            for (LocalDate currentDate = startDate; currentDate.isBefore(endDate); currentDate = currentDate.plusDays(1)) {
+                System.out.println("current " + currentDate);
+                System.out.println();
+                for (RentedCarDetailDTO rentedCarDetailDTO : rentedCarDetails) {
 //                LocalDate start = rentedCarDetailDTO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 //                LocalDate end = rentedCarDetailDTO.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 //                Instant instant = input.toInstant();
 //                ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
 //                LocalDate date = zdt.toLocalDate();
-                Date date1 = new Date(rentedCarDetailDTO.getStartDate().getTime());
-                LocalDate start = date1.toLocalDate();
+                    Date date1 = new Date(rentedCarDetailDTO.getStartDate().getTime());
+                    LocalDate start = date1.toLocalDate();
 //                System.out.println(start);
-                Date date2 = new Date(rentedCarDetailDTO.getEndDate().getTime());
-                LocalDate end = date2.toLocalDate().plusDays(1);
+                    Date date2 = new Date(rentedCarDetailDTO.getEndDate().getTime());
+                    LocalDate end = date2.toLocalDate().plusDays(1);
 //                System.out.println(end);
 //                System.out.println();
 
-                for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1)) {
-                    if (currentDate.isEqual(date)) {
-                        Car car = carRepo.findCarByCarId(rentedCarDetailDTO.getCarId());
+                    for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1)) {
+                        if (currentDate.isEqual(date)) {
+                            Car car = carRepo.findCarByCarId(rentedCarDetailDTO.getCarId());
 //                        System.out.println(car.getRegistrationNo());
 //                        System.out.println();
-                        if (!registrationNos.contains(car.getRegistrationNo())) {
-                            registrationNos.add(car.getRegistrationNo());
+                            if (!registrationNos.contains(car.getRegistrationNo())) {
+                                registrationNos.add(car.getRegistrationNo());
+                            }
                         }
                     }
                 }
@@ -111,17 +113,21 @@ public class CarServiceImpl implements CarService {
 
         ArrayList<Car> busyCars = new ArrayList<>();
 
-        for (String registrationNo : registrationNos) {
-            for (Car car : allCarsByType) {
-                if (car.getRegistrationNo().equalsIgnoreCase(registrationNo)) {
-                    System.out.println("occupied " + car.getRegistrationNo());
-                    busyCars.add(car);
+        if (registrationNos != null) {
+            for (String registrationNo : registrationNos) {
+                for (Car car : allCarsByType) {
+                    if (car.getRegistrationNo().equalsIgnoreCase(registrationNo)) {
+                        System.out.println("occupied " + car.getRegistrationNo());
+                        busyCars.add(car);
+                    }
                 }
             }
         }
 
-        for (Car car : busyCars) {
-            allCarsByType.remove(car);
+        if (busyCars != null) {
+            for (Car car : busyCars) {
+                allCarsByType.remove(car);
+            }
         }
 
         System.out.println(allCarsByType);
