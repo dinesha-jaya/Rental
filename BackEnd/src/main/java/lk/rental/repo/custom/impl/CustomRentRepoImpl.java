@@ -81,8 +81,8 @@ public class CustomRentRepoImpl implements CustomRentRepo {
 
     @Override
     public List<RentHasCar> findRentHasCars(long rentId) {
-        TypedQuery<RentHasCar> query = entityManager.createQuery("SELECT h FROM Rent r JOIN r.rentHasCars h WHERE r.rentId = ?1", RentHasCar.class);
-//        System.out.println("inside");
+        TypedQuery<RentHasCar> query = entityManager.createQuery("SELECT r FROM RentHasCar r WHERE r.rent.rentId = ?1", RentHasCar.class);
+        query.setParameter(1, rentId);
         return query.getResultList();
     }
 

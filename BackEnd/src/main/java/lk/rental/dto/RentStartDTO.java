@@ -16,7 +16,7 @@ public class RentStartDTO {
     private String status;
     private String remarks;
 
-    private ArrayList<RentStartCarDTO> rentStartCarList;
+    private ArrayList<RentStartCarDTO> rentStartCars;
 
 
 

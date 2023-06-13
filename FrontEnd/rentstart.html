@@ -215,8 +215,6 @@
         let rentRemarks = $('#inputRemarks').val();
         console.log(cancelRent);
 
-        let rentStartCarList = [];
-
         let rentStart = {
             rentId: rental.id,
             status: "rent",
@@ -233,6 +231,7 @@
                 data: JSON.stringify(rentStart)
             });
         } else {
+            let rentStartCarList = [];
             let rentCarInfoFromTable = getRentCarInfoFromTable();
 
             for (let car of rentCarInfoFromTable) {

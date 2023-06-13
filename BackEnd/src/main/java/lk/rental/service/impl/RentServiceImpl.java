@@ -245,37 +245,31 @@ public class RentServiceImpl implements RentService {
         String rentStatus = rentStartDTO.getStatus();
         String rentRemarks = rentStartDTO.getRemarks();
         long rentId = rentStartDTO.getRentId();
+        System.out.println(rentId);
 
         Rent rent = rentRepo.findByRentId(rentId);
-        System.out.println(rent);
+        //System.out.println(rent);
 
         rent.setStatus(rentStatus);
         rent.setRemarks(rentRemarks);
-        System.out.println("there");
-        System.out.println(rentStartDTO.getRentStartCarList());
-        System.out.println("there2");
 
-        ArrayList<RentStartCarDTO> rentStartCarDTOs = rentStartDTO.getRentStartCarList();
-        System.out.println("here");
-        System.out.println(rentStartCarDTOs);
-        System.out.println("here 2");
+        ArrayList<RentStartCarDTO> rentStartCarDTOs = rentStartDTO.getRentStartCars();
 
         for (RentStartCarDTO rentStartCarDTO : rentStartCarDTOs) {
             String registrationNo = rentStartCarDTO.getRegistrationNo();
-            System.out.println(registrationNo);
+            //System.out.println(registrationNo);
             Car car = carRepo.findByRegistrationNo(registrationNo);
             long carId = car.getCarId();
-            System.out.println(carId);
+            //System.out.println(carId);
             boolean lossDamageWaiverPaymentReceipt = rentStartCarDTO.isLossDamageWaiverPaymentReceipt();
             long meterStart = rentStartCarDTO.getMeterStart();
 
             List<RentHasCar> rentHasCars = rentRepo.findRentHasCars(rentId);
-            System.out.println(rentHasCars);
 
             for (RentHasCar rentHasCar: rentHasCars) {
                 long rentHasCarId = rentHasCar.getCar().getCarId();
-                System.out.println(rentHasCarId);
-                System.out.println(carId);
+//                System.out.println(rentHasCarId);
+//                System.out.println(carId);
                 if (rentHasCarId == carId) {
                     rentHasCar.setLossDamageWaiverPaymentReceipt(lossDamageWaiverPaymentReceipt);
                     rentHasCar.setMeterStart(meterStart);
