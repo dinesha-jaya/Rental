@@ -14,7 +14,7 @@ public class RentHasCar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long rentalHasCarId;
+    private long rentHasCarId;
     private long meterStart;
     private long meterEnd;
     private boolean driverOption;

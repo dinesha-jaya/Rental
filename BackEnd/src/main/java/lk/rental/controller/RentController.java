@@ -52,12 +52,14 @@ public class RentController {
         return new ResponseUtil("200", " Added.!", rentSummaryDTO);
     }
 
-    @PutMapping
+    @PostMapping("/rentstart")
     public void rentStart(@RequestBody RentStartDTO rentStartDTO) {
+        System.out.println(rentStartDTO);
         rentService.updateRent(rentStartDTO);
+//        return new ResponseUtil("200", " Added.!", null);
     }
 
-    @PutMapping("/cancel")
+    @PostMapping("/cancel")
     public void cancelRent(@RequestBody RentStartDTO rentStartDTO) {
         rentService.cancelRent(rentStartDTO);
     }

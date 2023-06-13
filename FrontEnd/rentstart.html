@@ -50,13 +50,13 @@
     </table>
     <div class="col-md-12">
         <div class="form-check">
-            <input class="form-check-input" id="cancelRentCheck" type="checkbox">
-            <label class="form-check-label" for="cancelRentCheck" id="cbCancelRent">Cancel Rental</label>
+            <input class="form-check-input" id="cancelRentCheck" name="cancelRentCheck" type="checkbox">
+            <label class="form-check-label" for="cancelRentCheck">Cancel Rental</label>
         </div>
     </div>
     <div class="col-md-6">
         <label class="form-label fw-bold fs-6" for="inputRemarks">Remarks</label>
-        <textarea class="form-control" id="inputRemarks" type="text"></textarea>
+        <textarea class="form-control" id="inputRemarks" name="inputRemarks" type="text"></textarea>
     </div>
     <div class="col-12">
         <button class="btn btn-primary" type="button" id="btnRentStart">Rent Start</button>
@@ -205,17 +205,15 @@
                 alert("All Cars must submit the Loss Damage Waiver Payment Receipt and have a Meter Start Reading");
                 break;
             }
-
-
         }
         console.log(selectedCars);
         return selectedCars;
-
     }
 
     $('#btnRentStart').click(function () {
-        let cancelRent = $('#cbCancelRent').checked;
+        let cancelRent = $('#cancelRentCheck').is(':checked');
         let rentRemarks = $('#inputRemarks').val();
+        console.log(cancelRent);
 
         let rentStartCarList = [];
 
@@ -230,22 +228,23 @@
             rentStart.status = "cancel";
             $.ajax({
                 url: 'http://localhost:8080/rental/rent/cancel',
-                method: "put",
+                method: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify(rentStart)
             });
         } else {
-            let rentStartCar = {
-                registrationNo: "",
-                lossDamageWaiverPaymentReceipt: false,
-                meterStart: 0
-            }
             let rentCarInfoFromTable = getRentCarInfoFromTable();
 
             for (let car of rentCarInfoFromTable) {
+                let rentStartCar = {
+                    registrationNo: "",
+                    lossDamageWaiverPaymentReceipt: false,
+                    meterStart: 0
+                }
+
                 rentStartCar.registrationNo = car.items[1];
                 rentStartCar.lossDamageWaiverPaymentReceipt = true;
-                rentStartCar.meterStart = parseInt(car.items[3]);
+                rentStartCar.meterStart = parseInt(car.items[4]);
 
                 rentStartCarList.push(rentStartCar);
             }
@@ -254,8 +253,8 @@
             console.log(rentStart);
 
             $.ajax({
-                url: 'http://localhost:8080/rental/rent',
-                method: 'put',
+                url: 'http://localhost:8080/rental/rent/rentstart',
+                method: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify(rentStart)
             });

@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import java.sql.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -79,6 +77,13 @@ public class CustomRentRepoImpl implements CustomRentRepo {
         return query.getResultList();
 
 
+    }
+
+    @Override
+    public List<RentHasCar> findRentHasCars(long rentId) {
+        TypedQuery<RentHasCar> query = entityManager.createQuery("SELECT h FROM Rent r JOIN r.rentHasCars h WHERE r.rentId = ?1", RentHasCar.class);
+//        System.out.println("inside");
+        return query.getResultList();
     }
 
 //    @Override
