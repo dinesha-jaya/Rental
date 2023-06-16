@@ -16,8 +16,8 @@ public class RentDuration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long rentDurationId;
     private String rentDurationType;
-    private double rate;
-    private int freeKms;
+    private double ratePerType;
+    private int freeKmsPerType;
     private double pricePerExtraKm;
 
     @OneToOne(cascade = {CascadeType.ALL})

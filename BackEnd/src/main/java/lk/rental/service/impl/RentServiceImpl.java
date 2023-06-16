@@ -4,6 +4,8 @@ import lk.rental.dto.*;
 import lk.rental.entity.*;
 import lk.rental.repo.*;
 import lk.rental.service.RentService;
+import lk.rental.util.DriverFee;
+import lk.rental.util.LossDamageWaiverPayment;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,7 +125,7 @@ public class RentServiceImpl implements RentService {
         ArrayList<Rent> allRents = (ArrayList<Rent>) rentRepo.findAll();
         ArrayList<RentDTO> rentDTOs = new ArrayList<>();
 
-        for (Rent rent: allRents) {
+        for (Rent rent : allRents) {
             RentDTO rentDTO = new RentDTO();
             rentDTO.setRentId(rent.getRentId());
             rentDTO.setStartDate(rent.getStartDate().toLocalDate());
@@ -176,7 +179,7 @@ public class RentServiceImpl implements RentService {
 
         ArrayList<RentCarDTO> rentCarDTOs = new ArrayList<>();
 
-        for (RentHasCar rentHasCar: rentHasCars) {
+        for (RentHasCar rentHasCar : rentHasCars) {
             RentCarDTO rentCarDTO = new RentCarDTO();
             Car car = rentHasCar.getCar();
 
@@ -190,8 +193,8 @@ public class RentServiceImpl implements RentService {
 
             RentDuration rentDuration = rentDurationRepo.findByRentDurationTypeAndCar_CarId(rentDurationPlan, carId);
 
-            double rate = rentDuration.getRate();
-            int freeKms = rentDuration.getFreeKms();
+            double rate = rentDuration.getRatePerType();
+            int freeKms = rentDuration.getFreeKmsPerType();
             double pricePerExtraKm = rentDuration.getPricePerExtraKm();
 
             String driverName;
@@ -207,6 +210,9 @@ public class RentServiceImpl implements RentService {
                 driverContactNo = "";
             }
 
+            boolean lossDamageWaiverPaymentReceipt = rentHasCar.isLossDamageWaiverPaymentReceipt();
+            long meterStart = rentHasCar.getMeterStart();
+
             rentCarDTO.setBrand(brand);
             rentCarDTO.setFuelType(fuelType);
             rentCarDTO.setNoOfPassengers(noOfPassengers);
@@ -219,6 +225,9 @@ public class RentServiceImpl implements RentService {
 
             rentCarDTO.setDriverName(driverName);
             rentCarDTO.setDriverContactNo(driverContactNo);
+
+            rentCarDTO.setLossDamageWaiverPaymentReceipt(lossDamageWaiverPaymentReceipt);
+            rentCarDTO.setMeterStart(meterStart);
 
             rentCarDTOs.add(rentCarDTO);
 
@@ -266,7 +275,7 @@ public class RentServiceImpl implements RentService {
 
             List<RentHasCar> rentHasCars = rentRepo.findRentHasCars(rentId);
 
-            for (RentHasCar rentHasCar: rentHasCars) {
+            for (RentHasCar rentHasCar : rentHasCars) {
                 long rentHasCarId = rentHasCar.getCar().getCarId();
 //                System.out.println(rentHasCarId);
 //                System.out.println(carId);
@@ -279,7 +288,7 @@ public class RentServiceImpl implements RentService {
             rent.setRentHasCars(rentHasCars);
         }
 
-        System.out.println(rent.getRentHasCars());
+//        System.out.println(rent.getRentHasCars());
 
         rentRepo.save(rent);
 
@@ -298,6 +307,115 @@ public class RentServiceImpl implements RentService {
 
         rentRepo.save(rent);
     }
+
+    @Override
+    public void updateRentEnd(RentEndDTO rentEndDTO) {
+        String status = rentEndDTO.getStatus();
+        Date rentTerminatedDate = Date.valueOf(rentEndDTO.getRentTerminatedDate());
+
+        long rentId = rentEndDTO.getRentId();
+
+        Rent rent = rentRepo.findByRentId(rentId);
+
+        rent.setEndDate(rentTerminatedDate);
+
+        LocalDate startDate = rent.getStartDate().toLocalDate();
+        LocalDate endDate = rent.getEndDate().toLocalDate();
+
+        String rentDurationPlan = rent.getRentDurationPlan();
+
+        long days = 0;
+        long months = 0;
+
+        if (rentDurationPlan.equalsIgnoreCase("daily")) {
+            days = ChronoUnit.DAYS.between(startDate, endDate);
+        } else {
+            months = ChronoUnit.MONTHS.between(startDate, endDate);
+        }
+
+        ArrayList<RentEndCarDTO> rentEndCarList = rentEndDTO.getRentEndCarList();
+
+        double amount = 0.0;
+
+        for (RentEndCarDTO rentEndCarDTO : rentEndCarList) {
+            String registrationNo = rentEndCarDTO.getRegistrationNo();
+
+            Car car = carRepo.findByRegistrationNo(registrationNo);
+
+            long carId = car.getCarId();
+            String type = car.getType();
+
+            RentDuration rentDuration = rentDurationRepo.findByRentDurationTypeAndCar_CarId(rentDurationPlan, carId);
+
+            double rate = rentDuration.getRatePerType();
+            int freeKms = rentDuration.getFreeKmsPerType();
+            double pricePerExtraKm = rentDuration.getPricePerExtraKm();
+
+            double lossDamageWaiverPaymentCharge = rentEndCarDTO.getLossDamageWaiverPaymentCharge();
+            long meterEnd = rentEndCarDTO.getMeterEnd();
+
+            List<RentHasCar> rentHasCars = rentRepo.findRentHasCars(rentId);
+
+            long meterStart = 0;
+            double lossDamageWaiverPayment = 0.0;
+            double lossDamageWaiverPaymentReturn = 0.0;
+
+            for (RentHasCar rentHasCar : rentHasCars) {
+                long rentHasCarId = rentHasCar.getCar().getCarId();
+
+                if (rentHasCarId == carId) {
+                    meterStart = rentHasCar.getMeterStart();
+                    rentHasCar.setLossDamageWaiverPaymentCharge(lossDamageWaiverPaymentCharge);
+                    rentHasCar.setMeterEnd(meterEnd);
+
+                    switch (type) {
+                        case "general":
+                            lossDamageWaiverPayment = LossDamageWaiverPayment.LOSS_DAMAGE_WAIVER_PAYMENT_GENERAL.getPayment();
+                            break;
+                        case "premium":
+                            lossDamageWaiverPayment = LossDamageWaiverPayment.LOSS_DAMAGE_WAIVER_PAYMENT_PREMIUM.getPayment();
+                            break;
+                        case "luxury":
+                            lossDamageWaiverPayment = LossDamageWaiverPayment.LOSS_DAMAGE_WAIVER_PAYMENT_LUXURY.getPayment();
+                            break;
+                    }
+                    
+//                    System.out.println(lossDamageWaiverPaymentCharge);
+//                    System.out.println(lossDamageWaiverPayment);
+                    lossDamageWaiverPaymentReturn = lossDamageWaiverPayment - lossDamageWaiverPaymentCharge;
+
+//                    System.out.println(lossDamageWaiverPaymentReturn);
+                    rentHasCar.setLossDamageWaiverPayment(lossDamageWaiverPaymentReturn);
+
+                    if (rentHasCar.isDriverOption()) {
+                        if (rentDurationPlan.equalsIgnoreCase("daily")) {
+                            rentHasCar.setDriverFee(days * DriverFee.DRIVER_FEE.getFee());
+                        } else {
+                            long monthDays = ChronoUnit.DAYS.between(startDate, endDate);
+                            rentHasCar.setDriverFee(monthDays * DriverFee.DRIVER_FEE.getFee());
+                        }
+                    }
+
+                    if (rentDurationPlan.equalsIgnoreCase("daily")) {
+                        rentHasCar.setRateFee(rate * days);
+                        rentHasCar.setChargeForKms(((meterEnd - meterStart) - (freeKms * days)) * pricePerExtraKm);
+                    } else {
+                        rentHasCar.setRateFee(rate * months);
+                        rentHasCar.setChargeForKms(((meterEnd - meterStart) - (freeKms * months)) * pricePerExtraKm);
+                    }
+
+                    rentHasCar.setAmountPerCarPerTrip(rentHasCar.getDriverFee() + rentHasCar.getRateFee() + rentHasCar.getChargeForKms());
+
+                    amount += rentHasCar.getAmountPerCarPerTrip();
+                }
+            }
+            rent.setRentHasCars(rentHasCars);
+            rent.setStatus(status);
+            rent.setAmount(amount);
+        }
+        rentRepo.save(rent);
+    }
+
 
     private void setStatus(String registrationNo, String flag) {
         Car car = carRepo.findByRegistrationNo(registrationNo);

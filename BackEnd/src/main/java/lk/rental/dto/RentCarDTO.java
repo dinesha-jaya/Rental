@@ -21,4 +21,7 @@ public class RentCarDTO {
 
     private String driverName;
     private String driverContactNo;
+
+    private boolean lossDamageWaiverPaymentReceipt;
+    private long meterStart;
 }

@@ -36,6 +36,7 @@ public class Car {
     private String registrationNo;
     private int noOfPassengers;
     private String transmissionType;
+    private long lastMaintainedAt;
     private String status;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)

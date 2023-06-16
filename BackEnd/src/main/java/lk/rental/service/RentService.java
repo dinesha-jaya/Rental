@@ -1,9 +1,6 @@
 package lk.rental.service;
 
-import lk.rental.dto.RentProceedDTO;
-import lk.rental.dto.RentDTO;
-import lk.rental.dto.RentStartDTO;
-import lk.rental.dto.RentSummaryDTO;
+import lk.rental.dto.*;
 
 import java.util.ArrayList;
 
@@ -18,4 +15,6 @@ public interface RentService {
     void updateRent(RentStartDTO rentStartDTO);
 
     void cancelRent(RentStartDTO rentStartDTO);
+
+    void updateRentEnd(RentEndDTO rentEndDTO);
 }

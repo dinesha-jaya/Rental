@@ -29,9 +29,6 @@ public class CarServiceImpl implements CarService {
     @Autowired
     private RentRepo rentRepo;
 
-//    @Autowired
-//    private CustomRentRepo customRentRepo;
-
     @Autowired
     private ModelMapper modelMapper;
 

@@ -20,6 +20,11 @@ public class RentHasCar {
     private boolean driverOption;
     private boolean lossDamageWaiverPaymentReceipt;
     private double lossDamageWaiverPaymentCharge;
+    private double lossDamageWaiverPayment;
+    private double driverFee;
+    private double rateFee;
+    private double chargeForKms;
+    private double amountPerCarPerTrip;
 
     @OneToOne
     private Driver driver;

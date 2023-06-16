@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <title>Car Rental - Rental Close</title>
+    <title>Car Rental - Rent Terminate</title>
 </head>
 <body class="container">
 <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none" href="index.html">Easy
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none"
+       href="index.html">Easy
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
@@ -16,38 +17,179 @@
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" type="button">Login</button>
+        <button class="btn btn-outline-primary me-2" id="btnRentEndLoginOut" type="button">Login</button>
     </div>
 </header>
-<form class="row g-3" id="startRentalForm">
+<form class="row g-3" id="rentEndForm">
+    <div class="col-12">
+        <label class="form-label fw-bolder fs-5" for="rentEndForm" id="lblRentEnd"></label>
+    </div>
     <table class="table">
         <thead>
         <tr>
             <th scope="col">Car</th>
-            <th scope="col">Loss Damage Waiver Payment</th>
+            <th scope="col">Registration No</th>
+            <th scope="col">Loss Damage Waiver Charge</th>
             <th scope="col">Meter End</th>
         </tr>
         </thead>
-        <tbody>
-        <tr>
-            <td></td>
-            <td>
-                <input class="form-control" id="inputLossDamageWaiverPayment" type="text">
-            </td>
-            <td>
-                <input class="form-control" id="inputMeterEnd" type="text">
-            </td>
-        </tr>
+        <tbody id="tblRentEndCars">
         </tbody>
     </table>
     <div class="col-md-4">
-        <label class="form-label" for="inputStartDate">Rental Terminated On</label>
-        <input class="form-control" id="inputStartDate" type="date">
+        <label class="form-label" for="inputRentTerminatedDate">Rental Terminated On</label>
+        <input class="form-control" id="inputRentTerminatedDate" type="date">
     </div>
     <div class="col-md-12">
-        <button class="btn btn-primary" type="submit">Rent End</button>
+        <button class="btn btn-primary" id="btnRentEnd" type="button">Rent End</button>
     </div>
 </form>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script>
+    let credentials = null;
+    let rental = null;
+
+    function checkRentEndAdmin(username) {
+        if (username !== "admin@rent.lk") {
+            location.href = "index.html";
+        }
+    }
+
+    function checkRentEndLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+            rental = JSON.parse(localStorage.getItem("rental"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+        console.log(rental);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnRentEndLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+            let username = credentials.username;
+            checkRentEndAdmin(username);
+        }
+    }
+
+    checkRentEndLocalStorage();
+
+    function bindTblRentEndCarsRowClickEvents() {
+        $('#tblRentEndCars > tr').click(function () {
+            console.log($(this));
+        });
+    }
+
+
+    function displayRentEnd(data) {
+        let startDate = new Date(data.rentStartDate);
+        let rentStartDate = startDate.toDateString();
+
+        let endDate = new Date(data.rentEndDate);
+        let rentEndDate = endDate.toDateString();
+
+        $('#lblRentEnd').html(data.customerFirstName + ' ' + data.customerLastName + ' - ' + data.customerContactNo + ' - ' + rentStartDate + ' to ' + rentEndDate);
+
+        let rentCarDTOs = data.rentCarDTOs;
+
+        let table = document.getElementById("tblRentEndCars");
+
+        for (let car of rentCarDTOs) {
+            let row = table.insertRow(-1);
+            let cell0 = row.insertCell(0);
+            let cell1 = row.insertCell(1);
+            let cell2 = row.insertCell(2);
+            let cell3 = row.insertCell(3);
+
+            let payment = document.createElement("input");
+            payment.setAttribute("type", "text");
+            payment.setAttribute("class", "form-control payment");
+            payment.defaultValue = 0;
+
+            let meterEnd = document.createElement("input");
+            meterEnd.setAttribute("type", "text");
+            meterEnd.setAttribute("class", "form-control meterEnd");
+
+            cell0.innerHTML = car.brand;
+            cell1.innerHTML = car.registrationNo;
+            cell2.appendChild(payment);
+            cell3.appendChild(meterEnd);
+
+            $('#tblRentEndCars').append(row);
+        }
+        bindTblRentEndCarsRowClickEvents();
+    }
+
+    $.ajax({
+        url: 'http://localhost:8080/rental/rent?rentId=' + rental.id,
+        dataType: 'json',
+        success: function (resp) {
+            console.log(resp);
+            displayRentEnd(resp.data);
+        }
+    });
+
+    function getRentEndCarInfoFromTable() {
+        let table = document.getElementById('tblRentEndCars');
+
+        let selectedCars = [];
+
+        for (let r = 0; r < table.rows.length; r++) {
+            let registrationNoResp = table.rows[r].cells[1].innerHTML;
+
+            let payment = table.rows[r].cells[2].children[0];
+            let paymentResp = parseFloat(payment.value);
+
+            let meterEnd = table.rows[r].cells[3].children[0];
+            let meterEndResp = parseInt(meterEnd.value);
+
+            if (isNaN(meterEndResp)) {
+                selectedCars = [];
+            } else {
+                let rentEndCar = {
+                    registrationNo: registrationNoResp,
+                    lossDamageWaiverPaymentCharge: paymentResp,
+                    meterEnd: meterEndResp
+                }
+
+                selectedCars.push(rentEndCar);
+            }
+        }
+        return selectedCars;
+    }
+
+
+    $('#btnRentEnd').click(function () {
+        let rentTerminatedDate = $('#inputRentTerminatedDate').val();
+        let rentEndCarInfoFromTable = getRentEndCarInfoFromTable();
+
+        let rentEnd = {
+            rentId: rental.id,
+            rentTerminatedDate: rentTerminatedDate,
+            status: "rent end",
+            rentEndCarList: rentEndCarInfoFromTable
+        }
+
+        if (rentEnd.rentEndCarList.length > 0) {
+            $.ajax({
+                url: 'http://localhost:8080/rental/rent/rentend',
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(rentEnd),
+                success: function () {
+                    location.href = "rentendsummary.html";
+
+                }
+            });
+        } else {
+            alert("All Cars must have a Meter End Reading");
+        }
+
+
+    })
+</script>
 </body>
 </html>

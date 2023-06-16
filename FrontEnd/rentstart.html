@@ -70,7 +70,7 @@
     let credentials = null;
     let rental = null;
 
-    function checkAdmin(username) {
+    function checkRentStartAdmin(username) {
         if (username !== "admin@rent.lk") {
             location.href = "index.html";
         }
@@ -91,7 +91,7 @@
             $('#btnRentStartLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkAdmin(username);
+            checkRentStartAdmin(username);
         }
     }
 
@@ -154,7 +154,7 @@
         }
     });
 
-    function getRentCarInfoFromTable() {
+    function getRentStartCarInfoFromTable() {
         let table = document.getElementById('tblRentStartCarDetails');
 
         let selectedCars = [];
@@ -203,6 +203,7 @@
                 }
             } else {
                 alert("All Cars must submit the Loss Damage Waiver Payment Receipt and have a Meter Start Reading");
+                selectedCars = [];
                 break;
             }
         }
@@ -232,31 +233,39 @@
             });
         } else {
             let rentStartCarList = [];
-            let rentCarInfoFromTable = getRentCarInfoFromTable();
+            let rentCarInfoFromTable = getRentStartCarInfoFromTable();
 
-            for (let car of rentCarInfoFromTable) {
-                let rentStartCar = {
-                    registrationNo: "",
-                    lossDamageWaiverPaymentReceipt: false,
-                    meterStart: 0
+            if (rentCarInfoFromTable.length === 0) {
+                console.log(rentCarInfoFromTable);
+            } else {
+                for (let car of rentCarInfoFromTable) {
+                    let rentStartCar = {
+                        registrationNo: "",
+                        lossDamageWaiverPaymentReceipt: false,
+                        meterStart: 0
+                    }
+
+                    rentStartCar.registrationNo = car.items[1];
+                    rentStartCar.lossDamageWaiverPaymentReceipt = true;
+                    rentStartCar.meterStart = parseInt(car.items[4]);
+
+                    rentStartCarList.push(rentStartCar);
                 }
+                rentStart.rentStartCars = rentStartCarList;
 
-                rentStartCar.registrationNo = car.items[1];
-                rentStartCar.lossDamageWaiverPaymentReceipt = true;
-                rentStartCar.meterStart = parseInt(car.items[4]);
+                console.log(rentStart);
 
-                rentStartCarList.push(rentStartCar);
+                $.ajax({
+                    url: 'http://localhost:8080/rental/rent/rentstart',
+                    method: 'post',
+                    contentType: 'application/json',
+                    data: JSON.stringify(rentStart),
+                    success: function () {
+                        location.href = "rentstartsummary.html";
+
+                    }
+                });
             }
-            rentStart.rentStartCars = rentStartCarList;
-
-            console.log(rentStart);
-
-            $.ajax({
-                url: 'http://localhost:8080/rental/rent/rentstart',
-                method: 'post',
-                contentType: 'application/json',
-                data: JSON.stringify(rentStart)
-            });
         }
     });
 
