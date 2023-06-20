@@ -23,5 +23,12 @@ public class RentCarDTO {
     private String driverContactNo;
 
     private boolean lossDamageWaiverPaymentReceipt;
+    private double lossDamageWaiverPaymentCharge;
+    private double lossDamageWaiverPayment;
     private long meterStart;
+    private long meterEnd;
+    private double rateFee;
+    private double driverFee;
+    private double chargeForKms;
+    private double amountPerCarPerTrip;
 }

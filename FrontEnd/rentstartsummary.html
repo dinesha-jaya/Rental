@@ -14,7 +14,7 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentSummaryRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentStartSummaryRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
@@ -68,7 +68,7 @@
         </table>
     </div>
 
-    <div class="col-12" id="divRentSummary">
+    <div class="col-12" id="divRentStartSummary">
 
     </div>
 
@@ -92,7 +92,7 @@
 
         if (credentials != null) {
             // $('#lnkRent').css("display", "block");
-            $('#btnRentSummaryLoginOut').html("Logout");
+            $('#btnRentStartSummaryLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
         }
     }
@@ -122,15 +122,15 @@
 
         }
 
-        // if (credentials.userCategory === "admin") {
-        //     let btnToRent = $('<button class="btn btn-primary" id="btnProceedToRent" type="button">Proceed to Rent</button>');
-        //     $('#divRentSummary').append(btnToRent);
-        // }
+        if (credentials.userCategory === "admin") {
+            let btnToRentEnd = $('<button class="btn btn-primary" id="btnProceedToRentEnd" type="button">End the Rent</button>');
+            $('#divRentStartSummary').append(btnToRentEnd);
+        }
     }
 
-    // $('#divRentSummary').on('click', '#btnProceedToRent', function () {
-    //     location.href = "rentStart.html";
-    // });
+    $('#divRentStartSummary').on('click', '#btnProceedToRentEnd', function () {
+        location.href = "rentEnd.html";
+    });
 
     $.ajax({
         url: 'http://localhost:8080/rental/rent?rentId=' + rental.id,

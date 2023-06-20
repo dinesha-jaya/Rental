@@ -17,7 +17,7 @@
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnLoginCustomer" type="button" id="btnCustomerLoginOut">Login</button>
+        <button class="btn btn-outline-primary me-2" type="button" id="btnCustomerLoginOut">Login</button>
     </div>
 </header>
 <form class="row g-3" id="newCustomerForm">
@@ -79,13 +79,14 @@
             // $('#lnkRent').css("display", "block");
             $('#btnCustomerLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
+            location.href = "index.html";
         }
     }
 
     checkCustomerLocalStorage();
 
     $('#btnCustomerLoginOut').click(function () {
-        if ($('#btnLoginOut').innerHTML == "Logout") {
+        if ($('#btnCustomerLoginOut').innerHTML == "Logout") {
             alert("Successfully Logged out of the System");
             //$('#btnLoginOut').html("Login");
             localStorage.removeItem("credentials");
@@ -207,7 +208,7 @@
 
     });
 
-    $('#btnLoginCustomer').click(function () {
+    $('#btnCustomerLoginOut').click(function () {
         // $.ajax({
         //     url: 'http://localhost:8080/rental/customer/cookie',
         //     //headers: {'Access-Control-Allow-Credentials': true},

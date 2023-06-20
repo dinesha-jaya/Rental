@@ -13,15 +13,15 @@ import java.util.List;
 @Setter
 //@ToString
 @NamedNativeQuery(name = "Car.findPricingDto",
-        query = "SELECT DISTINCT brand, rentDurationType, rate, noOfPassengers, freeKms, pricePerExtraKm FROM (SELECT * FROM car INNER JOIN rentDuration on carId = car_carId WHERE type = ?1) as pricing",
+        query = "SELECT DISTINCT brand, rentDurationType, ratePerType, noOfPassengers, freeKmsPerType, pricePerExtraKm FROM (SELECT * FROM car INNER JOIN rentDuration on carId = car_carId WHERE type = ?1) as pricing",
         resultSetMapping = "Mapping.PricingDTO")
 @SqlResultSetMapping(name = "Mapping.PricingDTO",
         classes = @ConstructorResult(targetClass = PricingDTO.class,
                 columns = {@ColumnResult(name = "brand"),
                         @ColumnResult(name = "rentDurationType"),
-                        @ColumnResult(name = "rate"),
+                        @ColumnResult(name = "ratePerType"),
                         @ColumnResult(name = "noOfPassengers"),
-                        @ColumnResult(name = "freeKms"),
+                        @ColumnResult(name = "freeKmsPerType"),
                         @ColumnResult(name = "pricePerExtraKm")}))
 @Entity
 public class Car {
@@ -36,7 +36,6 @@ public class Car {
     private String registrationNo;
     private int noOfPassengers;
     private String transmissionType;
-    private long lastMaintainedAt;
     private String status;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)

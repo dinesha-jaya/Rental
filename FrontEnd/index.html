@@ -61,10 +61,10 @@
     checkIndexLocalStorage();
 
     $('#btnLoginOut').click(function () {
-        if ($('#btnLoginOut').innerHTML == "Logout") {
-            alert("Successfully Logged out of the System");
+        if ($('#btnLoginOut').innerHTML === "Logout") {
             //$('#btnLoginOut').html("Login");
             localStorage.removeItem("credentials");
+            alert("Successfully Logged out of the System");
         } else {
             location.href = "signin.html";
         }

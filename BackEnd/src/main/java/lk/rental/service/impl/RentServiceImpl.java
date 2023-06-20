@@ -7,6 +7,7 @@ import lk.rental.service.RentService;
 import lk.rental.util.DriverFee;
 import lk.rental.util.LossDamageWaiverPayment;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -166,14 +167,11 @@ public class RentServiceImpl implements RentService {
 //        String text = rentStartDate.format(formatter);
 //        LocalDate parsedRentStartDate = LocalDate.parse(text, formatter);
 //        System.out.println(parsedRentStartDate);
-
-
         LocalDate rentEndDate = rent.getEndDate().toLocalDate();
 //        System.out.println(rentEndDate);
-
         String rentDurationPlan = rent.getRentDurationPlan();
-
         String rentStatus = rent.getStatus();
+        double amount = rent.getAmount();
 
         List<RentHasCar> rentHasCars = rent.getRentHasCars();
 
@@ -211,7 +209,14 @@ public class RentServiceImpl implements RentService {
             }
 
             boolean lossDamageWaiverPaymentReceipt = rentHasCar.isLossDamageWaiverPaymentReceipt();
+            double lossDamageWaiverPaymentCharge = rentHasCar.getLossDamageWaiverPaymentCharge();
+            double lossDamageWaiverPayment = rentHasCar.getLossDamageWaiverPayment();
             long meterStart = rentHasCar.getMeterStart();
+            long meterEnd = rentHasCar.getMeterEnd();
+            double rateFee = rentHasCar.getRateFee();
+            double driverFee = rentHasCar.getDriverFee();
+            double chargeForKms = rentHasCar.getChargeForKms();
+            double amountPerCarPerTrip = rentHasCar.getAmountPerCarPerTrip();
 
             rentCarDTO.setBrand(brand);
             rentCarDTO.setFuelType(fuelType);
@@ -228,6 +233,13 @@ public class RentServiceImpl implements RentService {
 
             rentCarDTO.setLossDamageWaiverPaymentReceipt(lossDamageWaiverPaymentReceipt);
             rentCarDTO.setMeterStart(meterStart);
+            rentCarDTO.setLossDamageWaiverPaymentCharge(lossDamageWaiverPaymentCharge);
+            rentCarDTO.setLossDamageWaiverPayment(lossDamageWaiverPayment);
+            rentCarDTO.setMeterEnd(meterEnd);
+            rentCarDTO.setRateFee(rateFee);
+            rentCarDTO.setDriverFee(driverFee);
+            rentCarDTO.setChargeForKms(chargeForKms);
+            rentCarDTO.setAmountPerCarPerTrip(amountPerCarPerTrip);
 
             rentCarDTOs.add(rentCarDTO);
 
@@ -242,6 +254,7 @@ public class RentServiceImpl implements RentService {
         rentSummaryDTO.setRentEndDate(rentEndDate);
         rentSummaryDTO.setRentDurationPlan(rentDurationPlan);
         rentSummaryDTO.setRentStatus(rentStatus);
+        rentSummaryDTO.setRentAmount(amount);
 
         rentSummaryDTO.setRentCarDTOs(rentCarDTOs);
 
@@ -416,6 +429,74 @@ public class RentServiceImpl implements RentService {
         rentRepo.save(rent);
     }
 
+    @Override
+    public ArrayList<RentDTO> getPendingRentals() {
+
+        List<Rent> pendingRents = rentRepo.findAllByStatus("pending");
+        ArrayList<RentDTO> rentDTOs = new ArrayList<>();
+
+        for (Rent rent : pendingRents) {
+            RentDTO rentDTO = new RentDTO();
+            rentDTO.setRentId(rent.getRentId());
+            rentDTO.setStartDate(rent.getStartDate().toLocalDate());
+            rentDTO.setEndDate(rent.getEndDate().toLocalDate());
+            rentDTO.setRentDurationPlan(rent.getRentDurationPlan());
+            rentDTO.setStatus(rent.getStatus());
+
+            rentDTOs.add(rentDTO);
+        }
+
+        return rentDTOs;
+//        return modelMapper.map(rentRepo.findAllByStatus("pending"), new TypeToken<ArrayList<RentDTO>>() {}.getType());
+    }
+
+    @Override
+    public ArrayList<RentDTO> getPendingCustomerRentals(String customerEmail) {
+        Customer customer = customerRepo.findByEmail(customerEmail);
+
+        long customerId = customer.getCustomerId();
+
+        List<Rent> pendingCustomer = rentRepo.findAllByCustomerIdANDNOTStatus(customerId, "pending");
+
+        ArrayList<RentDTO> rentDTOs = new ArrayList<>();
+
+        for (Rent rent : pendingCustomer) {
+            RentDTO rentDTO = new RentDTO();
+            rentDTO.setRentId(rent.getRentId());
+            rentDTO.setStartDate(rent.getStartDate().toLocalDate());
+            rentDTO.setEndDate(rent.getEndDate().toLocalDate());
+            rentDTO.setRentDurationPlan(rent.getRentDurationPlan());
+            rentDTO.setStatus(rent.getStatus());
+
+            rentDTOs.add(rentDTO);
+        }
+
+        return rentDTOs;
+    }
+
+    @Override
+    public ArrayList<RentDTO> getCustomerRentals(String customerEmail) {
+        Customer customer = customerRepo.findByEmail(customerEmail);
+
+        long customerId = customer.getCustomerId();
+
+        List<Rent> customerRents = rentRepo.findAllByCustomer_CustomerId(customerId);
+
+        ArrayList<RentDTO> rentDTOs = new ArrayList<>();
+
+        for (Rent rent : customerRents) {
+            RentDTO rentDTO = new RentDTO();
+            rentDTO.setRentId(rent.getRentId());
+            rentDTO.setStartDate(rent.getStartDate().toLocalDate());
+            rentDTO.setEndDate(rent.getEndDate().toLocalDate());
+            rentDTO.setRentDurationPlan(rent.getRentDurationPlan());
+            rentDTO.setStatus(rent.getStatus());
+
+            rentDTOs.add(rentDTO);
+        }
+
+        return rentDTOs;
+    }
 
     private void setStatus(String registrationNo, String flag) {
         Car car = carRepo.findByRegistrationNo(registrationNo);

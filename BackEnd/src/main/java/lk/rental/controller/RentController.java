@@ -28,6 +28,25 @@ public class RentController {
         return new ResponseUtil("200", " Success.!", allRentals);
     }
 
+    @GetMapping("/pending")
+    public ResponseUtil getPendingRentals() {
+        ArrayList<RentDTO> allPendingRentals = rentService.getPendingRentals();
+        return new ResponseUtil("200", " Success.!", allPendingRentals);
+    }
+
+    @GetMapping("/pending/customer")
+    @ResponseBody
+    public ResponseUtil getPendingCustomerRentals(@RequestParam String customerEmail) {
+        ArrayList<RentDTO> allPendingCustomerRentals = rentService.getPendingCustomerRentals(customerEmail);
+        return new ResponseUtil("200", " Success.!", allPendingCustomerRentals);
+    }
+
+    @GetMapping("/customer")
+    public ResponseUtil getCustomerRentals(@RequestParam String customerEmail) {
+        ArrayList<RentDTO> allPendingCustomerRentals = rentService.getCustomerRentals(customerEmail);
+        return new ResponseUtil("200", " Success.!", allPendingCustomerRentals);
+    }
+
     @PostMapping("/rent")
     public ResponseUtil saveRent(@RequestBody RentProceedDTO rentProceedDTO) {
         long rentId = rentService.addRent(rentProceedDTO);

@@ -21,6 +21,7 @@ public class RentSummaryDTO {
     private LocalDate rentEndDate;
     private String rentDurationPlan;
     private String rentStatus;
+    private double rentAmount;
 
     ArrayList<RentCarDTO> rentCarDTOs = new ArrayList<>();
 

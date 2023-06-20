@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <title>Car Rental - Admin Dashboard</title>
+    <title>Car Rental - Customer Rents</title>
 </head>
 <body class="container">
 
@@ -14,51 +14,45 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkAdminDBRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCustomerRentsRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnAdminDBLoginOut" type="button">Login</button>
+        <button class="btn btn-outline-primary me-2" id="btnCustomerRentsLoginOut" type="button">Login</button>
     </div>
 </header>
 
-<form class="row g-3" id="admindashboardform">
+<form class="row g-3" id="customerRentsForm">
     <div class="col-12">
-        <label class="form-label fw-bolder fs-5" for="admindashboardform">Admin Dashboard</label>
+        <label class="form-label fw-bolder fs-5" for="customerRentsForm" id="lblCustomerRents">Rents</label>
     </div>
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">Rent Id</th>
+            <th scope="col" style="display:none;">Rent Id</th>
             <th scope="col">Rent Duration Plan</th>
             <th scope="col">Start Date</th>
             <th scope="col">End Date</th>
             <th scope="col">Status</th>
         </tr>
         </thead>
-        <tbody id="tblRentals">
+        <tbody id="tblCustomerRents">
         </tbody>
     </table>
-
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 50px; margin-right: 10px" id="btnRents">Rents</button>
-        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 10px; margin-right: 10px" id="btnCars">Cars</button>
-        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 10px; margin-right: 50px" id="btnDrivers">Drivers</button>
-    </div>
 </form>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery-3.6.3.min.js"></script>
 <script>
     let credentials = null;
 
-    function checkAdminDBUser(username) {
+    function checkCustomerRentsUser(username) {
         if (username !== "admin@rent.lk") {
             location.href = "index.html";
         }
     }
 
-    function checkAdminDBLocalStorage() {
+    function checkCustomerRentsLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
@@ -68,19 +62,19 @@
 
         if (credentials != null) {
             // $('#lnkRent').css("display", "block");
-            $('#btnAdminDBLoginOut').html("Logout");
+            $('#btnCustomerRentsLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkAdminDBUser(username);
+            checkCustomerRentsUser(username);
         }
     }
 
-    checkAdminDBLocalStorage();
+    checkCustomerRentsLocalStorage();
 
-    async function getAllPendingRentals() {
+    async function getCustomerAllRents() {
         try {
             let responds = await $.ajax({
-                url: 'http://localhost:8080/rental/rent/pending',
+                url: 'http://localhost:8080/rental/rent/customer?customerEmail' + credentials.username,
                 dataType: 'json',
                 success: function (resp) {
                     for (let rent of resp.data) {
@@ -91,72 +85,58 @@
                         let endDate = new Date(rent.endDate);
                         let rentEndDate = endDate.toDateString();
 
+                        $('#lblCustomerRents').val(`Rents - ${credentials.username}`);
+
                         let row = `<tr>
-                        <td>${rent.rentId}</td>
+                        <td style="display:none;">${rent.rentId}</td>
                         <td>${rent.rentDurationPlan}</td>
                         <td>${rentStartDate}</td>
                         <td>${rentEndDate}</td>
                         <td>${rent.status}</td>
                         </tr>`;
-                        $('#tblRentals').append(row);
+                        $('#tblCustomerRents').append(row);
                     }
                 }
             }).then(() => {
-                bindTblRentalsRowClickEvents();
+                bindTblCustomerRentsRowClickEvents();
             });
         } catch (error) {
 
         }
     }
-    //
-    // function redirectToRentStart(rentId) {
-    //     $.ajax({
-    //         url: 'http://localhost:8080/rental/rent?rentId=' + rentId,
-    //         dataType: 'json',
-    //         success: function () {
-    //             location.href = "rentsummary.html";
-    //         }
-    //     });
-    // }
 
     let rental = {
         id: -1
     }
 
-    function bindTblRentalsRowClickEvents() {
-        $('#tblRentals > tr').click(function () {
+    function bindTblCustomerRentsRowClickEvents() {
+        $('#tblCustomerRents > tr').click(function () {
             let rentalId = $(this).children().eq(0).text();
-            //let status = $(this).children().eq(4).text();
+            let status = $(this).children().eq(4).text();
             rental.id = rentalId;
+            console.log(status);
 
             if (localStorage.getItem("rental") != null) {
                 localStorage.removeItem("rental");
             }
             localStorage.setItem("rental", JSON.stringify(rental));
-            location.href = "rentsummary.html";
+
+            if (status === "rent") {
+                location.href = "rentstartsummary.html";
+            } else if (status === "rent end") {
+                location.href = "rentendsummary.html";
+            }
+
         });
     }
 
-    function displayPendingRentals() {
-        $('#tblRentals').empty();
-        getAllPendingRentals();
+    function displayCustomerRents() {
+        $('#tblCustomerRents').empty();
+        getCustomerAllRents();
     }
 
-    displayPendingRentals();
-
-    $('#btnRents').click(function () {
-        location.href = "rents.html";
-    });
-
-    $('#btnCars').click(function () {
-        location.href = "car.html";
-    });
-
-    $('#btnDrivers').click(function () {
-        location.href = "driver.html";
-    });
-
-
+    displayCustomerRents();
 </script>
+
 </body>
 </html>

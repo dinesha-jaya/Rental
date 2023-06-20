@@ -132,7 +132,7 @@
             url: 'http://localhost:8080/rental/car?carType=' + carType,
             success: function (resp) {
                 for (let car of resp.data) {
-                    let row = '<tr><td>' + car.brand + '</td><td>' + car.rentDurationType + '</td><td>' + car.rate + '</td><td>' + car.noOfPassengers + '</td><td>' + car.freeKms + '</td><td>' + car.pricePerExtraKm + '</td></tr>';
+                    let row = '<tr><td>' + car.brand + '</td><td>' + car.rentDurationType + '</td><td>' + car.ratePerType + '</td><td>' + car.noOfPassengers + '</td><td>' + car.freeKmsPerType + '</td><td>' + car.pricePerExtraKm + '</td></tr>';
                     $("#tblPricing").append(row);
                 }
             }

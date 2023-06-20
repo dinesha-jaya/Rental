@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Car Rental</title>
+</head>
+<body class="container">
+
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-5 text-dark text-decoration-none"
+       href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentEndSummaryRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" id="btnRentEndSummaryLoginOut" type="button">Login</button>
+    </div>
+</header>
+
+<form class="row g-3" id="rentEndSummaryForm">
+    <div class="col-12">
+        <label class="form-label fw-bolder fs-5" for="rentEndSummaryForm" id="lblRentEndSummary">Rent
+            Summary</label>
+    </div>
+
+</form>
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script>
+    let credentials = null;
+    let rental = null;
+
+    function checkRentEndSummaryLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+            rental = JSON.parse(localStorage.getItem("rental"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+        console.log(rental);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnRentEndSummaryLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+        }
+    }
+
+    checkRentEndSummaryLocalStorage();
+
+    function displayRentEndSummary(data) {
+        $('#lblRentEndSummary').html('Rent Summary - ' + data.customerFirstName + ' ' + data.customerLastName + ' - ' + data.rentStatus.toUpperCase());
+    }
+
+    $.ajax({
+        url: 'http://localhost:8080/rental/rent?rentId=' + rental.id,
+        dataType: "json",
+        success: function (resp) {
+            console.log(resp.data);
+            displayRentEndSummary(resp.data);
+        },
+        error: function (error) {
+            alert(error);
+        }
+    });
+</script>
+</body>
+</html>

@@ -11,8 +11,8 @@ public class PricingDTO {
 
     private String brand;
     private String rentDurationType;
-    private double rate;
+    private double ratePerType;
     private int noOfPassengers;
-    private int freeKms;
+    private int freeKmsPerType;
     private double pricePerExtraKm;
 }

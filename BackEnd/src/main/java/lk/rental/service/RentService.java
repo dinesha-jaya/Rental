@@ -17,4 +17,10 @@ public interface RentService {
     void cancelRent(RentStartDTO rentStartDTO);
 
     void updateRentEnd(RentEndDTO rentEndDTO);
+
+    ArrayList<RentDTO> getPendingRentals();
+
+    ArrayList<RentDTO> getPendingCustomerRentals(String customerEmail);
+
+    ArrayList<RentDTO> getCustomerRentals(String customerEmail);
 }
