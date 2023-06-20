@@ -27,24 +27,29 @@
     <div class="col-12">
         <label class="form-label fw-bolder fs-5" for="admindashboardform">Admin Dashboard</label>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Rent Id</th>
-            <th scope="col">Rent Duration Plan</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
-            <th scope="col">Status</th>
-        </tr>
-        </thead>
-        <tbody id="tblRentals">
-        </tbody>
-    </table>
+<!--    <table class="table">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th scope="col">Rent Id</th>-->
+<!--            <th scope="col">Rent Duration Plan</th>-->
+<!--            <th scope="col">Start Date</th>-->
+<!--            <th scope="col">End Date</th>-->
+<!--            <th scope="col">Status</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody id="tblRentals">-->
+<!--        </tbody>-->
+<!--    </table>-->
 
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 50px; margin-right: 10px" id="btnRents">Rents</button>
-        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 10px; margin-right: 10px" id="btnCars">Cars</button>
-        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 10px; margin-right: 50px" id="btnDrivers">Drivers</button>
+    <div class="btn-group col-12" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-success" style="font-size: xx-large; margin-left: 100px; margin-right: 15px" id="btnStartRents">Start Rents</button>
+        <button type="button" class="btn btn-success" style="font-size: xx-large; margin-left: 15px; margin-right: 15px" id="btnEndRents">End Rents</button>
+        <button type="button" class="btn btn-danger" style="font-size: xx-large; margin-left: 15px; margin-right: 100px" id="btnRents">All Rents</button>
+    </div>
+
+    <div class="btn-group col-12" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 100px; margin-right: 15px" id="btnCars">Cars</button>
+        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 15px; margin-right: 100px" id="btnDrivers">Drivers</button>
     </div>
 </form>
 <script src="js/bootstrap.min.js"></script>
@@ -77,75 +82,16 @@
 
     checkAdminDBLocalStorage();
 
-    async function getAllPendingRentals() {
-        try {
-            let responds = await $.ajax({
-                url: 'http://localhost:8080/rental/rent/pending',
-                dataType: 'json',
-                success: function (resp) {
-                    for (let rent of resp.data) {
-                        console.log(rent);
-                        let startDate = new Date(rent.startDate);
-                        let rentStartDate = startDate.toDateString();
+    $('#btnStartRents').click(function () {
+        location.href = "adminstartrents.html";
+    });
 
-                        let endDate = new Date(rent.endDate);
-                        let rentEndDate = endDate.toDateString();
-
-                        let row = `<tr>
-                        <td>${rent.rentId}</td>
-                        <td>${rent.rentDurationPlan}</td>
-                        <td>${rentStartDate}</td>
-                        <td>${rentEndDate}</td>
-                        <td>${rent.status}</td>
-                        </tr>`;
-                        $('#tblRentals').append(row);
-                    }
-                }
-            }).then(() => {
-                bindTblRentalsRowClickEvents();
-            });
-        } catch (error) {
-
-        }
-    }
-    //
-    // function redirectToRentStart(rentId) {
-    //     $.ajax({
-    //         url: 'http://localhost:8080/rental/rent?rentId=' + rentId,
-    //         dataType: 'json',
-    //         success: function () {
-    //             location.href = "rentsummary.html";
-    //         }
-    //     });
-    // }
-
-    let rental = {
-        id: -1
-    }
-
-    function bindTblRentalsRowClickEvents() {
-        $('#tblRentals > tr').click(function () {
-            let rentalId = $(this).children().eq(0).text();
-            //let status = $(this).children().eq(4).text();
-            rental.id = rentalId;
-
-            if (localStorage.getItem("rental") != null) {
-                localStorage.removeItem("rental");
-            }
-            localStorage.setItem("rental", JSON.stringify(rental));
-            location.href = "rentsummary.html";
-        });
-    }
-
-    function displayPendingRentals() {
-        $('#tblRentals').empty();
-        getAllPendingRentals();
-    }
-
-    displayPendingRentals();
+    $('#btnEndRents').click(function () {
+        location.href = "adminendrents.html";
+    });
 
     $('#btnRents').click(function () {
-        location.href = "rents.html";
+        location.href = "adminrents.html";
     });
 
     $('#btnCars').click(function () {
@@ -155,6 +101,8 @@
     $('#btnDrivers').click(function () {
         location.href = "driver.html";
     });
+
+
 
 
 </script>

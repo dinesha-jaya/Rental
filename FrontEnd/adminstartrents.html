@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Car Rental - Pending Rents</title>
+</head>
+<body class="container">
+
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-5 text-dark text-decoration-none"
+       href="index.html">Easy
+        Car Rental</a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkStartRentsRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
+    </ul>
+
+    <div class="col-md-3 text-end">
+        <button class="btn btn-outline-primary me-2" id="btnStartRentsLoginOut" type="button">Login</button>
+    </div>
+</header>
+
+<form class="row g-3" id="rentsForm">
+    <div class="col-12">
+        <label class="form-label fw-bolder fs-5" for="rentsForm">Pending Rents</label>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Rent Id</th>
+            <th scope="col">Rent Duration Plan</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody id="tblPendingRents">
+        </tbody>
+    </table>
+</form>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-3.6.3.min.js"></script>
+<script>
+    let credentials = null;
+
+    function checkStartRentsUser(username) {
+        if (username !== "admin@rent.lk") {
+            location.href = "index.html";
+        }
+    }
+
+    function checkStartRentsLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+
+        if (credentials != null) {
+            // $('#lnkRent').css("display", "block");
+            $('#btnStartRentsLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+            let username = credentials.username;
+            checkStartRentsUser(username);
+        }
+    }
+
+    checkStartRentsLocalStorage();
+
+    async function getAllPendingRentals() {
+        try {
+            let responds = await $.ajax({
+                url: 'http://localhost:8080/rental/rent/pending',
+                dataType: 'json',
+                success: function (resp) {
+                    for (let rent of resp.data) {
+                        console.log(rent);
+                        let startDate = new Date(rent.startDate);
+                        let rentStartDate = startDate.toDateString();
+
+                        let endDate = new Date(rent.endDate);
+                        let rentEndDate = endDate.toDateString();
+
+                        let row = `<tr>
+                        <td>${rent.rentId}</td>
+                        <td>${rent.rentDurationPlan}</td>
+                        <td>${rentStartDate}</td>
+                        <td>${rentEndDate}</td>
+                        <td>${rent.status}</td>
+                        </tr>`;
+                        $('#tblPendingRents').append(row);
+                    }
+                }
+            }).then(() => {
+                bindTblPendingRentsRowClickEvents();
+            });
+        } catch (error) {
+
+        }
+    }
+
+    let rental = {
+        id: -1
+    }
+
+    function bindTblPendingRentsRowClickEvents() {
+        $('#tblPendingRents > tr').click(function () {
+            let rentalId = $(this).children().eq(0).text();
+            //let status = $(this).children().eq(4).text();
+            rental.id = rentalId;
+
+            if (localStorage.getItem("rental") != null) {
+                localStorage.removeItem("rental");
+            }
+            localStorage.setItem("rental", JSON.stringify(rental));
+            location.href = "rentsummary.html";
+        });
+    }
+
+    function displayPendingRentals() {
+        $('#tblPendingRents').empty();
+        getAllPendingRentals();
+    }
+
+    displayPendingRentals();
+
+
+
+</script>
+
+</body>
+</html>

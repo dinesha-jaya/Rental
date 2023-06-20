@@ -7,7 +7,6 @@ import lk.rental.service.RentService;
 import lk.rental.util.DriverFee;
 import lk.rental.util.LossDamageWaiverPayment;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -239,7 +238,7 @@ public class RentServiceImpl implements RentService {
             rentCarDTO.setRateFee(rateFee);
             rentCarDTO.setDriverFee(driverFee);
             rentCarDTO.setChargeForKms(chargeForKms);
-            rentCarDTO.setAmountPerCarPerTrip(amountPerCarPerTrip);
+            rentCarDTO.setAmountForCarForTrip(amountPerCarPerTrip);
 
             rentCarDTOs.add(rentCarDTO);
 

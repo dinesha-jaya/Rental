@@ -29,6 +29,46 @@
             Summary</label>
     </div>
 
+    <div class="col-12">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Total</th>
+            </tr>
+            </thead>
+            <tbody id="tblRentSummary">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-12">
+        <label class="form-label fw-bolder fs-7">Rented Cars</label>
+    </div>
+
+    <div class="col-12">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Car</th>
+                <th scope="col">Rate Fee</th>
+                <th scope="col">Charge for Kms</th>
+                <th scope="col">Driver Fee</th>
+                <th scope="col">Total</th>
+                <th scope="col">Loss Damage Charge</th>
+                <th scope="col">Loss Damage Payment</th>
+            </tr>
+            </thead>
+            <tbody id="tblRentEndCarsSummary">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-12" id="divRentPay">
+
+    </div>
+
 </form>
 
 <script src="js/bootstrap.min.js"></script>
@@ -57,8 +97,36 @@
     checkRentEndSummaryLocalStorage();
 
     function displayRentEndSummary(data) {
-        $('#lblRentEndSummary').html('Rent Summary - ' + data.customerFirstName + ' ' + data.customerLastName + ' - ' + data.rentStatus.toUpperCase());
+        let startDate = new Date(data.rentStartDate);
+        let rentStartDate = startDate.toDateString();
+
+        let endDate = new Date(data.rentEndDate);
+        let rentEndDate = endDate.toDateString();
+
+        $('#lblRentEndSummary').html('Rent - ' + data.customerFirstName + ' ' + data.customerLastName + ' - ' + data.customerContactNo);
+
+        let row = `<tr><td>${rentStartDate}</td><td>${rentEndDate}</td><td>${data.rentAmount}</td></tr>`;
+        $('#tblRentSummary').append(row);
+
+        let rentCarDTOs = data.rentCarDTOs;
+        for (let car of rentCarDTOs) {
+
+            let kms = car.meterStart - car.meterEnd;
+
+            let row = `<tr><td>${car.brand} - ${car.registrationNo}</td><td${car.rateFee}</td><td>${kms}km - ${car.chargeForKms}</td><td>${car.driverFee}</td><td>${car.amountForCarForTrip}</td><td>${car.lossDamageWaiverPaymentCharge}</td><td>${car.lossDamageWaiverPayment}</td></tr>`;
+            $('#tblRentEndCarsSummary').append(row);
+
+        }
+
+        if (credentials.userCategory === "admin") {
+            let btnToRentPay = $('<button class="btn btn-primary" id="btnRentPay" type="button">Pay</button>');
+            $('#divRentPay').append(btnToRentPay);
+        }
     }
+
+    $('#divRentPay').on('click', '#btnRentPay', function () {
+
+    });
 
     $.ajax({
         url: 'http://localhost:8080/rental/rent?rentId=' + rental.id,

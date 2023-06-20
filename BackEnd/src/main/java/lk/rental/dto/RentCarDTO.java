@@ -30,5 +30,5 @@ public class RentCarDTO {
     private double rateFee;
     private double driverFee;
     private double chargeForKms;
-    private double amountPerCarPerTrip;
+    private double amountForCarForTrip;
 }
