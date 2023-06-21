@@ -71,10 +71,10 @@
 
     checkCustomerRentsLocalStorage();
 
-    async function getCustomerAllRents() {
+    async function getCustomerAllRentsNotPending() {
         try {
             let responds = await $.ajax({
-                url: 'http://localhost:8080/rental/rent/customer?customerEmail' + credentials.username,
+                url: 'http://localhost:8080/rental/rent/pending/customer?customerEmail=' + credentials.username,
                 dataType: 'json',
                 success: function (resp) {
                     for (let rent of resp.data) {
@@ -112,7 +112,7 @@
     function bindTblCustomerRentsRowClickEvents() {
         $('#tblCustomerRents > tr').click(function () {
             let rentalId = $(this).children().eq(0).text();
-            let status = $(this).children().eq(4).text();
+            // let status = $(this).children().eq(4).text();
             rental.id = rentalId;
             console.log(status);
 
@@ -132,7 +132,7 @@
 
     function displayCustomerRents() {
         $('#tblCustomerRents').empty();
-        getCustomerAllRents();
+        getCustomerAllRentsNotPending();
     }
 
     displayCustomerRents();

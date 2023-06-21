@@ -4,7 +4,9 @@ import lk.rental.dto.*;
 import lk.rental.entity.Car;
 import lk.rental.service.CarService;
 import lk.rental.service.RentService;
+import lk.rental.util.RentStatus;
 import lk.rental.util.ResponseUtil;
+import lk.rental.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,20 +32,26 @@ public class RentController {
 
     @GetMapping("/pending")
     public ResponseUtil getPendingRentals() {
-        ArrayList<RentDTO> allPendingRentals = rentService.getPendingRentals();
+        ArrayList<RentDTO> allPendingRentals = rentService.getRentalsByStatus(RentStatus.PENDING.getStatus());
         return new ResponseUtil("200", " Success.!", allPendingRentals);
+    }
+
+    @GetMapping("/current")
+    public ResponseUtil getCurrentRentals() {
+        ArrayList<RentDTO> allCurrentRentals = rentService.getRentalsByStatus(RentStatus.CURRENT.getStatus());
+        return new ResponseUtil("200", " Success.!", allCurrentRentals);
     }
 
     @GetMapping("/pending/customer")
     @ResponseBody
-    public ResponseUtil getPendingCustomerRentals(@RequestParam String customerEmail) {
-        ArrayList<RentDTO> allPendingCustomerRentals = rentService.getPendingCustomerRentals(customerEmail);
+    public ResponseUtil getCustomerRentalsNotPending(@RequestParam String customerEmail) {
+        ArrayList<RentDTO> allPendingCustomerRentals = rentService.getCustomerRentalsNotPending(customerEmail);
         return new ResponseUtil("200", " Success.!", allPendingCustomerRentals);
     }
 
     @GetMapping("/customer")
-    public ResponseUtil getCustomerRentals(@RequestParam String customerEmail) {
-        ArrayList<RentDTO> allPendingCustomerRentals = rentService.getCustomerRentals(customerEmail);
+    public ResponseUtil getCustomerPendingRentals(@RequestParam String customerEmail) {
+        ArrayList<RentDTO> allPendingCustomerRentals = rentService.getCustomerPendingRentals(customerEmail);
         return new ResponseUtil("200", " Success.!", allPendingCustomerRentals);
     }
 
@@ -62,7 +70,7 @@ public class RentController {
 
     @GetMapping(params = {"registrationNo"})
     public void setStatusFlag(@RequestParam("registrationNo") String registrationNo) {
-        carService.setStatus(registrationNo, "flag");
+        carService.setStatus(registrationNo, Status.FLAG.getStatus());
     }
 
     @GetMapping(params = {"rentId"})

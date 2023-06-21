@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <title>Car Rental - Pending Rents</title>
+    <title>Car Rental - Customer Pending Rents</title>
 </head>
 <body class="container">
 
@@ -14,30 +14,31 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkStartRentsRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCustomerPendingRentsRent" style="display: none;">Rent</a>
+        </li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnStartRentsLoginOut" type="button">Login</button>
+        <button class="btn btn-outline-primary me-2" id="btnCustomerPendingRentsLoginOut" type="button">Login</button>
     </div>
 </header>
 
-<form class="row g-3" id="startRentsForm">
+<form class="row g-3" id="customerPendingRentsForm">
     <div class="col-12">
-        <label class="form-label fw-bolder fs-5" for="startRentsForm">Pending Rents</label>
+        <label class="form-label fw-bolder fs-5" for="customerPendingRentsForm">Customer Pending Rents</label>
     </div>
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">Rent Id</th>
+            <th scope="col" style="display:none;">Rent Id</th>
             <th scope="col">Rent Duration Plan</th>
             <th scope="col">Start Date</th>
             <th scope="col">End Date</th>
             <th scope="col">Status</th>
         </tr>
         </thead>
-        <tbody id="tblPendingRents">
+        <tbody id="tblPendingCustomerRentals">
         </tbody>
     </table>
 </form>
@@ -46,13 +47,13 @@
 <script>
     let credentials = null;
 
-    function checkStartRentsUser(username) {
+    function checkCustomerPendingRentsUser(username) {
         if (username !== "admin@rent.lk") {
             location.href = "index.html";
         }
     }
 
-    function checkStartRentsLocalStorage() {
+    function checkCustomerPendingRentsLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
@@ -62,19 +63,19 @@
 
         if (credentials != null) {
             // $('#lnkRent').css("display", "block");
-            $('#btnStartRentsLoginOut').html("Logout");
+            $('#btnCustomerPendingRentsLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkStartRentsUser(username);
+            checkCustomerPendingRentsUser(username);
         }
     }
 
-    checkStartRentsLocalStorage();
+    checkCustomerPendingRentsLocalStorage();
 
-    async function getAllPendingRentals() {
+    async function getAllPendingCustomerRentals() {
         try {
             let responds = await $.ajax({
-                url: 'http://localhost:8080/rental/rent/pending',
+                url: 'http://localhost:8080/rental/rent/customer?customerEmail' + credentials.username,
                 dataType: 'json',
                 success: function (resp) {
                     for (let rent of resp.data) {
@@ -86,17 +87,17 @@
                         let rentEndDate = endDate.toDateString();
 
                         let row = `<tr>
-                        <td>${rent.rentId}</td>
+                        <td style="display:none;">${rent.rentId}</td>
                         <td>${rent.rentDurationPlan}</td>
                         <td>${rentStartDate}</td>
                         <td>${rentEndDate}</td>
                         <td>${rent.status}</td>
                         </tr>`;
-                        $('#tblPendingRents').append(row);
+                        $('#tblPendingCustomerRentals').append(row);
                     }
                 }
             }).then(() => {
-                bindTblPendingRentsRowClickEvents();
+                bindTblPendingCustomerRentalsRowClickEvents();
             });
         } catch (error) {
 
@@ -107,30 +108,27 @@
         id: -1
     }
 
-    function bindTblPendingRentsRowClickEvents() {
-        $('#tblPendingRents > tr').click(function () {
+    function bindTblPendingCustomerRentalsRowClickEvents() {
+        $('#tblPendingCustomerRentals > tr').click(function () {
             let rentalId = $(this).children().eq(0).text();
-            //let status = $(this).children().eq(4).text();
+            // let status = $(this).children().eq(4).text();
             rental.id = rentalId;
 
             if (localStorage.getItem("rental") != null) {
                 localStorage.removeItem("rental");
             }
             localStorage.setItem("rental", JSON.stringify(rental));
-            location.href = "rentstartsummary.html";
+            location.href = "rentsummary.html";
         });
     }
 
-    function displayPendingRentals() {
-        $('#tblPendingRents').empty();
-        getAllPendingRentals();
+    function displayPendingCustomerRentals() {
+        $('#tblPendingCustomerRentals').empty();
+        getAllPendingCustomerRentals();
     }
 
-    displayPendingRentals();
-
-
+    displayPendingCustomerRentals();
 
 </script>
-
 </body>
 </html>

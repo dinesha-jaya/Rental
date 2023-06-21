@@ -49,8 +49,8 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public ArrayList<PricingDTO> getCars(String carType) {
-        List<PricingDTO> generalCars = carRepo.findPricingDto(carType);
-        return (ArrayList<PricingDTO>) generalCars;
+        List<PricingDTO> cars = carRepo.findPricingDto(carType);
+        return (ArrayList<PricingDTO>) cars;
         //return modelMapper.map(carRepo.findPricingDtoByBrand(), new TypeToken<ArrayList<PricingDTO>>() {}.getType());
     }
 
@@ -74,8 +74,8 @@ public class CarServiceImpl implements CarService {
 
         if (rentedCarDetails != null) {
             for (LocalDate currentDate = startDate; currentDate.isBefore(endDate); currentDate = currentDate.plusDays(1)) {
-                System.out.println("current " + currentDate);
-                System.out.println();
+//                System.out.println("current " + currentDate);
+//                System.out.println();
                 for (RentedCarDetailDTO rentedCarDetailDTO : rentedCarDetails) {
 //                LocalDate start = rentedCarDetailDTO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 //                LocalDate end = rentedCarDetailDTO.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -114,7 +114,7 @@ public class CarServiceImpl implements CarService {
             for (String registrationNo : registrationNos) {
                 for (Car car : allCarsByType) {
                     if (car.getRegistrationNo().equalsIgnoreCase(registrationNo)) {
-                        System.out.println("occupied " + car.getRegistrationNo());
+//                        System.out.println("occupied " + car.getRegistrationNo());
                         busyCars.add(car);
                     }
                 }

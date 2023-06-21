@@ -9,6 +9,7 @@ import lk.rental.repo.RentDurationRepo;
 import lk.rental.repo.RentRepo;
 import lk.rental.repo.UserRepo;
 import lk.rental.service.CustomerService;
+import lk.rental.util.UserCategory;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
         Random randNo = new Random();
         user.setPassword("" + (randNo.nextInt(10000-1000) + 1000));
         user.setUsername(customerDTO.getEmail());
-        user.setUserCategory("customer");
+        user.setUserCategory(UserCategory.CUSTOMER.getUserCategory());
 
         User savedUser = userRepo.save(user);
 

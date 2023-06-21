@@ -17,7 +17,7 @@ public interface RentRepo extends CrudRepository<Rent, Long>, CustomRentRepo {
     List<Rent> findAllByStatus(String status);
 
     @Query(value = "SELECT * FROM rent WHERE customer_customerId = ?1 AND status <> ?2", nativeQuery = true)
-    List<Rent> findAllByCustomerIdANDNOTStatus(long customerId, String status);
+    List<Rent> findAllByCustomerNotStatus(long customerId, String status);
 
     List<Rent> findAllByCustomer_CustomerId(long customerId);
 }

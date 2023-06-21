@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <title>Car Rental - Pending Rents</title>
+    <title>Car Rental - Finish Rents</title>
 </head>
 <body class="container">
 
@@ -14,18 +14,18 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkStartRentsRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkEndRentsRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnStartRentsLoginOut" type="button">Login</button>
+        <button class="btn btn-outline-primary me-2" id="btnEndRentsLoginOut" type="button">Login</button>
     </div>
 </header>
 
-<form class="row g-3" id="startRentsForm">
+<form class="row g-3" id="endRentsForm">
     <div class="col-12">
-        <label class="form-label fw-bolder fs-5" for="startRentsForm">Pending Rents</label>
+        <label class="form-label fw-bolder fs-5" for="endRentsForm">Current Rents</label>
     </div>
     <table class="table">
         <thead>
@@ -37,7 +37,7 @@
             <th scope="col">Status</th>
         </tr>
         </thead>
-        <tbody id="tblPendingRents">
+        <tbody id="tblCurrentRents">
         </tbody>
     </table>
 </form>
@@ -46,13 +46,13 @@
 <script>
     let credentials = null;
 
-    function checkStartRentsUser(username) {
+    function checkEndRentsUser(username) {
         if (username !== "admin@rent.lk") {
             location.href = "index.html";
         }
     }
 
-    function checkStartRentsLocalStorage() {
+    function checkEndRentsLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
@@ -62,19 +62,19 @@
 
         if (credentials != null) {
             // $('#lnkRent').css("display", "block");
-            $('#btnStartRentsLoginOut').html("Logout");
+            $('#btnEndRentsLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkStartRentsUser(username);
+            checkEndRentsUser(username);
         }
     }
 
-    checkStartRentsLocalStorage();
+    checkEndRentsLocalStorage();
 
-    async function getAllPendingRentals() {
+    async function getAllCurrentRentals() {
         try {
             let responds = await $.ajax({
-                url: 'http://localhost:8080/rental/rent/pending',
+                url: 'http://localhost:8080/rental/rent/current',
                 dataType: 'json',
                 success: function (resp) {
                     for (let rent of resp.data) {
@@ -92,11 +92,11 @@
                         <td>${rentEndDate}</td>
                         <td>${rent.status}</td>
                         </tr>`;
-                        $('#tblPendingRents').append(row);
+                        $('#tblCurrentRents').append(row);
                     }
                 }
             }).then(() => {
-                bindTblPendingRentsRowClickEvents();
+                bindTblCurrentRentsRowClickEvents();
             });
         } catch (error) {
 
@@ -107,8 +107,8 @@
         id: -1
     }
 
-    function bindTblPendingRentsRowClickEvents() {
-        $('#tblPendingRents > tr').click(function () {
+    function bindTblCurrentRentsRowClickEvents() {
+        $('#tblCurrentRents > tr').click(function () {
             let rentalId = $(this).children().eq(0).text();
             //let status = $(this).children().eq(4).text();
             rental.id = rentalId;
@@ -117,16 +117,16 @@
                 localStorage.removeItem("rental");
             }
             localStorage.setItem("rental", JSON.stringify(rental));
-            location.href = "rentstartsummary.html";
+            location.href = "rentendsummary.html";
         });
     }
 
-    function displayPendingRentals() {
-        $('#tblPendingRents').empty();
-        getAllPendingRentals();
+    function displayCurrentRentals() {
+        $('#tblCurrentRents').empty();
+        getAllCurrentRentals();
     }
 
-    displayPendingRentals();
+    displayCurrentRentals();
 
 
 

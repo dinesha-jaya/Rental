@@ -18,9 +18,9 @@ public interface RentService {
 
     void updateRentEnd(RentEndDTO rentEndDTO);
 
-    ArrayList<RentDTO> getPendingRentals();
+    ArrayList<RentDTO> getCustomerRentalsNotPending(String customerEmail);
 
-    ArrayList<RentDTO> getPendingCustomerRentals(String customerEmail);
+    ArrayList<RentDTO> getCustomerPendingRentals(String customerEmail);
 
-    ArrayList<RentDTO> getCustomerRentals(String customerEmail);
+    ArrayList<RentDTO> getRentalsByStatus(String status);
 }

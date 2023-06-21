@@ -4,6 +4,7 @@ import lk.rental.dto.DriverDTO;
 import lk.rental.entity.Driver;
 import lk.rental.repo.DriverRepo;
 import lk.rental.service.DriverService;
+import lk.rental.util.Status;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void flagDriver(Long driverId) {
         Driver driver = driverRepo.findByDriverId(driverId);
-        driver.setStatus("flag");
+        driver.setStatus(Status.FLAG.getStatus());
         driverRepo.save(driver);
     }
 }

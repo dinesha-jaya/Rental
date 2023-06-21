@@ -4,8 +4,7 @@ import lk.rental.dto.*;
 import lk.rental.entity.*;
 import lk.rental.repo.*;
 import lk.rental.service.RentService;
-import lk.rental.util.DriverFee;
-import lk.rental.util.LossDamageWaiverPayment;
+import lk.rental.util.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,12 +51,10 @@ public class RentServiceImpl implements RentService {
         rent.setRentDurationPlan(rentDurationPlan);
         rent.setStartDate(Date.valueOf(startDate));
         rent.setEndDate(Date.valueOf(endDate));
-        rent.setStatus("pending");
+        rent.setStatus(RentStatus.PENDING.getStatus());
         rent.setCustomer(customer);
 
         ArrayList<CarDriverDTO> carDriverList = rentProceedDTO.getCarDriverList();
-
-//        double tentativeAmount;
 
         for (CarDriverDTO carDriverDTO : carDriverList) {
 
@@ -68,29 +65,12 @@ public class RentServiceImpl implements RentService {
 
                 Driver availableDriver = driverRepo.getAvailableDriver();
                 rentHasCar.setDriver(availableDriver);
-                availableDriver.setStatus("occupied");
-
-
+                availableDriver.setStatus(RentStatus.PENDING.getStatus());
             }
 
-            setStatus(carDriverDTO.getRegistrationNo(), "rent");
+            setStatus(carDriverDTO.getRegistrationNo(), RentStatus.PENDING.getStatus());
             Car car = carRepo.findByRegistrationNo(carDriverDTO.getRegistrationNo());
-            System.out.println(car);
-
-//            RentDuration rentDuration = rentDurationRepo.findByCarAndRentDurationType(car, rentDurationPlan);
-//            Period period = Period.between(startDate, endDate);
-//
-//            int years = period.getYears();
-//
-//            int months = period.getMonths();
-//
-//            int days = period.getDays();
-//
-//            if (rentDurationPlan.equalsIgnoreCase("monthly")) {
-//                tentativeAmount = ((years * 12) + months + (days / 30.0)) * rentDuration.
-//            } else if (rentDurationPlan.equalsIgnoreCase("daily")) {
-//
-//            }
+//            System.out.println(car);
 
             rentHasCar.setCar(car);
             rentHasCar.setRent(rent);
@@ -104,7 +84,7 @@ public class RentServiceImpl implements RentService {
 
         customerRepo.save(customer);
 
-        setStatusAll("available");
+        setStatusAll(Status.AVAILABLE.getStatus());
 
         return savedRent.getRentId();
     }
@@ -112,7 +92,7 @@ public class RentServiceImpl implements RentService {
     private void setStatusAll(String status) {
         ArrayList<Car> allCars = (ArrayList<Car>) carRepo.findAll();
         for (Car car : allCars) {
-            if (car.getStatus().equalsIgnoreCase("flag")) {
+            if (car.getStatus().equalsIgnoreCase(Status.FLAG.getStatus())) {
                 car.setStatus(status);
                 carRepo.save(car);
             }
@@ -339,7 +319,7 @@ public class RentServiceImpl implements RentService {
         long days = 0;
         long months = 0;
 
-        if (rentDurationPlan.equalsIgnoreCase("daily")) {
+        if (rentDurationPlan.equalsIgnoreCase(RentDurationPlan.DAILY.getRentDurationPlan())) {
             days = ChronoUnit.DAYS.between(startDate, endDate);
         } else {
             months = ChronoUnit.MONTHS.between(startDate, endDate);
@@ -390,6 +370,8 @@ public class RentServiceImpl implements RentService {
                         case "luxury":
                             lossDamageWaiverPayment = LossDamageWaiverPayment.LOSS_DAMAGE_WAIVER_PAYMENT_LUXURY.getPayment();
                             break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + type);
                     }
                     
 //                    System.out.println(lossDamageWaiverPaymentCharge);
@@ -400,7 +382,7 @@ public class RentServiceImpl implements RentService {
                     rentHasCar.setLossDamageWaiverPayment(lossDamageWaiverPaymentReturn);
 
                     if (rentHasCar.isDriverOption()) {
-                        if (rentDurationPlan.equalsIgnoreCase("daily")) {
+                        if (rentDurationPlan.equalsIgnoreCase(RentDurationPlan.DAILY.getRentDurationPlan())) {
                             rentHasCar.setDriverFee(days * DriverFee.DRIVER_FEE.getFee());
                         } else {
                             long monthDays = ChronoUnit.DAYS.between(startDate, endDate);
@@ -408,7 +390,7 @@ public class RentServiceImpl implements RentService {
                         }
                     }
 
-                    if (rentDurationPlan.equalsIgnoreCase("daily")) {
+                    if (rentDurationPlan.equalsIgnoreCase(RentDurationPlan.DAILY.getRentDurationPlan())) {
                         rentHasCar.setRateFee(rate * days);
                         rentHasCar.setChargeForKms(((meterEnd - meterStart) - (freeKms * days)) * pricePerExtraKm);
                     } else {
@@ -429,9 +411,9 @@ public class RentServiceImpl implements RentService {
     }
 
     @Override
-    public ArrayList<RentDTO> getPendingRentals() {
+    public ArrayList<RentDTO> getRentalsByStatus(String status) {
 
-        List<Rent> pendingRents = rentRepo.findAllByStatus("pending");
+        List<Rent> pendingRents = rentRepo.findAllByStatus(status);
         ArrayList<RentDTO> rentDTOs = new ArrayList<>();
 
         for (Rent rent : pendingRents) {
@@ -450,16 +432,16 @@ public class RentServiceImpl implements RentService {
     }
 
     @Override
-    public ArrayList<RentDTO> getPendingCustomerRentals(String customerEmail) {
+    public ArrayList<RentDTO> getCustomerRentalsNotPending(String customerEmail) {
         Customer customer = customerRepo.findByEmail(customerEmail);
 
         long customerId = customer.getCustomerId();
 
-        List<Rent> pendingCustomer = rentRepo.findAllByCustomerIdANDNOTStatus(customerId, "pending");
+        List<Rent> rentsNotPending = rentRepo.findAllByCustomerNotStatus(customerId, RentStatus.PENDING.getStatus());
 
         ArrayList<RentDTO> rentDTOs = new ArrayList<>();
 
-        for (Rent rent : pendingCustomer) {
+        for (Rent rent : rentsNotPending) {
             RentDTO rentDTO = new RentDTO();
             rentDTO.setRentId(rent.getRentId());
             rentDTO.setStartDate(rent.getStartDate().toLocalDate());
@@ -474,7 +456,7 @@ public class RentServiceImpl implements RentService {
     }
 
     @Override
-    public ArrayList<RentDTO> getCustomerRentals(String customerEmail) {
+    public ArrayList<RentDTO> getCustomerPendingRentals(String customerEmail) {
         Customer customer = customerRepo.findByEmail(customerEmail);
 
         long customerId = customer.getCustomerId();

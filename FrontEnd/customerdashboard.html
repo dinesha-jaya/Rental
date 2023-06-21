@@ -27,23 +27,18 @@
     <div class="col-12">
         <label class="form-label fw-bolder fs-5" for="customerDBForm">Customer Dashboard</label>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col" style="display:none;">Rent Id</th>
-            <th scope="col">Rent Duration Plan</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
-            <th scope="col">Status</th>
-        </tr>
-        </thead>
-        <tbody id="tblPendingCustomerRentals">
-        </tbody>
-    </table>
 
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 50px; margin-right: 10px" id="btnCustomerRents">Rents</button>
-        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 10px; margin-right: 50px" id="btnCustomerProfile">Profile</button>
+    <div class="btn-group col-12" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-warning" style="font-size: xx-large; margin-left: 200px; margin-right: 200px" id="btnCustomerMakeRent">Make Rent</button>
+    </div>
+
+    <div class="btn-group col-12" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-success" style="font-size: xx-large; margin-left: 100px; margin-right: 15px" id="btnCustomerPendingRents">Pending Rents</button>
+        <button type="button" class="btn btn-danger" style="font-size: xx-large; margin-left: 15px; margin-right: 100px" id="btnCustomerAllRents">All Rents</button>
+    </div>
+
+    <div class="btn-group col-12" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary" style="font-size: xx-large; margin-left: 200px; margin-right: 200px" id="btnCustomerProfile">Profile</button>
     </div>
 </form>
 <script src="js/bootstrap.min.js"></script>
@@ -77,64 +72,15 @@
 
     checkCustomerDBLocalStorage();
 
-    async function getAllPendingCustomerRentals() {
-        try {
-            let responds = await $.ajax({
-                url: 'http://localhost:8080/rental/rent/pending/customer?customerEmail=' + credentials.username,
-                dataType: 'json',
-                success: function (resp) {
-                    for (let rent of resp.data) {
-                        console.log(rent);
-                        let startDate = new Date(rent.startDate);
-                        let rentStartDate = startDate.toDateString();
+    $('#btnCustomerMakeRent').click(function () {
+        location.href = "rent.html";
+    });
 
-                        let endDate = new Date(rent.endDate);
-                        let rentEndDate = endDate.toDateString();
+    $('#btnCustomerPendingRents').click(function () {
+        location.href = "customerpendingrents.html";
+    });
 
-                        let row = `<tr>
-                        <td style="display:none;">${rent.rentId}</td>
-                        <td>${rent.rentDurationPlan}</td>
-                        <td>${rentStartDate}</td>
-                        <td>${rentEndDate}</td>
-                        <td>${rent.status}</td>
-                        </tr>`;
-                        $('#tblPendingCustomerRentals').append(row);
-                    }
-                }
-            }).then(() => {
-                bindTblPendingCustomerRentalsRowClickEvents();
-            });
-        } catch (error) {
-
-        }
-    }
-
-    let rental = {
-        id: -1
-    }
-
-    function bindTblPendingCustomerRentalsRowClickEvents() {
-        $('#tblPendingCustomerRentals > tr').click(function () {
-            let rentalId = $(this).children().eq(0).text();
-            // let status = $(this).children().eq(4).text();
-            rental.id = rentalId;
-
-            if (localStorage.getItem("rental") != null) {
-                localStorage.removeItem("rental");
-            }
-            localStorage.setItem("rental", JSON.stringify(rental));
-            location.href = "rentsummary.html";
-        });
-    }
-
-    function displayPendingCustomerRentals() {
-        $('#tblPendingCustomerRentals').empty();
-        getAllPendingCustomerRentals();
-    }
-
-    displayPendingCustomerRentals();
-
-    $('#btnCustomerRents').click(function () {
+    $('#btnCustomerAllRents').click(function () {
         location.href = "customerrents.html";
     });
 
