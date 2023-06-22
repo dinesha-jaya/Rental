@@ -3,6 +3,7 @@ package lk.rental.service.impl;
 import lk.rental.dto.CustomerDTO;
 import lk.rental.dto.RentSummaryDTO;
 import lk.rental.dto.RentCarDTO;
+import lk.rental.dto.UserDTO;
 import lk.rental.entity.*;
 import lk.rental.repo.CustomerRepo;
 import lk.rental.repo.RentDurationRepo;
@@ -35,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
     private ModelMapper modelMapper;
 
     @Override
-    public void addCustomer(CustomerDTO customerDTO) {
+    public UserDTO addCustomer(CustomerDTO customerDTO) {
 //        if (customerRepo.existsById(customerDTO.getCustomerId())) {
 //            throw new RuntimeException(("Customer " + customerDTO.getCustomerId() + " already exists"));
 //        }
@@ -60,6 +61,8 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setUser(savedUser);
 
         customerRepo.save(customer);
+
+        return new UserDTO(user.getUsername(), user.getPassword(), user.getUserCategory());
 
 //        Customer savedCustomer = customerRepo.save(modelMapper.map(customerDTO, Customer.class));
     }

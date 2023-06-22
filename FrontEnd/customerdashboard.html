@@ -19,7 +19,7 @@
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnCustomerDBLoginOut" type="button">Login</button>
+        <input class="btn btn-outline-primary me-2" id="btnCustomerDBLoginOut" type="button" value="Login"/>
     </div>
 </header>
 
@@ -47,30 +47,49 @@
 
     let credentials = null;
 
-    function checkCustomerDBUser(username) {
-        if (username !== "admin@rent.lk") {
-            location.href = "index.html";
-        }
-    }
-
     function checkCustomerDBLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
             console.log(err);
         }
-        console.log(credentials);
+        // console.log(credentials);
 
         if (credentials != null) {
-            // $('#lnkRent').css("display", "block");
-            $('#btnCustomerDBLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkCustomerDBUser(username);
+            if (username === "admin@rent.lk") {
+                location.href = "admindashboard.html";
+            } else {
+                $('#lnkCustomerDBRent').css("display", "block");
+                // $('#btnCustomerDBLoginOut').html("Logout");
+                //localStorage.removeItem("credentials");
+                let btnLoginOut = document.getElementById("btnCustomerDBLoginOut");
+                btnLoginOut.value = "Logout";
+            }
+
+        } else {
+            document.getElementById("btnCustomerMakeRent").disabled = true;
+            document.getElementById("btnCustomerPendingRents").disabled = true;
+            document.getElementById("btnCustomerAllRents").disabled = true;
+            document.getElementById("btnCustomerProfile").disabled = true;
         }
     }
 
     checkCustomerDBLocalStorage();
+
+    $('#btnCustomerDBLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnCustomerDBLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            alert("Successfully Logged out of the System");
+            btnLoginOut.value = "Login";
+            // btnPricingRent.value = "Pricing";
+            $('#lnkCustomerDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     $('#btnCustomerMakeRent').click(function () {
         location.href = "rent.html";

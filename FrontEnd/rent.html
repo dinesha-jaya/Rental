@@ -76,7 +76,7 @@
 <script>
     let credentials = null;
 
-    function checkLocalStorage() {
+    function checkRentLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
@@ -86,12 +86,38 @@
 
         if (credentials != null) {
             // $('#lnkRent').css("display", "block");
-            $('#btnRentLoginOut').html("Logout");
+            // $('#btnRentLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
+            let username = credentials.username;
+            if (username === "admin@rent.lk") {
+                location.href = "admindashboard.html";
+            } else {
+                $('#lnkCustomerDBRent').css("display", "block");
+                // $('#btnCustomerDBLoginOut').html("Logout");
+                //localStorage.removeItem("credentials");
+                let btnLoginOut = document.getElementById("btnCustomerDBLoginOut");
+                btnLoginOut.value = "Logout";
+            }
+        } else {
+            location.href = "index.html";
         }
     }
 
-    checkLocalStorage();
+    checkRentLocalStorage();
+
+    $('#btnRentLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnRentLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            alert("Successfully Logged out of the System");
+            btnLoginOut.value = "Login";
+            // btnPricingRent.value = "Pricing";
+            $('#lnkRentRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     function loadAvailableCars(searchCars) {
         console.log(searchCars);

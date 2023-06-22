@@ -22,8 +22,8 @@ public class CustomerController {
 
     @PostMapping()
     public ResponseUtil saveCustomer(@RequestBody CustomerDTO customerDTO) {
-        customerService.addCustomer(customerDTO);
-        return new ResponseUtil("200", " Added.!", null);
+        UserDTO userDTO = customerService.addCustomer(customerDTO);
+        return new ResponseUtil("200", " Added.!", userDTO);
     }
 
 //    @GetMapping
@@ -32,18 +32,18 @@ public class CustomerController {
 //        return new ResponseUtil("200", " Success.!", allCustomers);
 //    }
 
-    @PostMapping("/cookie")
-    public ResponseUtil setOTP(@RequestBody UserDTO credentialDTO) {
-//        System.out.println(credentialDTO);
-
-        String password = userService.getPasswordByUsername(credentialDTO.getUsername());
-
-//        System.out.println(password);
-
-        credentialDTO.setPassword(password);
-
-        return new ResponseUtil("200", " Added.!", credentialDTO);
-    }
+//    @PostMapping("/cookie")
+//    public ResponseUtil setOTP(@RequestBody UserDTO credentialDTO) {
+////        System.out.println(credentialDTO);
+//
+//        String password = userService.getPasswordByUsername(credentialDTO.getUsername());
+//
+////        System.out.println(password);
+//
+//        credentialDTO.setPassword(password);
+//
+//        return new ResponseUtil("200", " Added.!", credentialDTO);
+//    }
 
 
 //    @GetMapping("/cookie")

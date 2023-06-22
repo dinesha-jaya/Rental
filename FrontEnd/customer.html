@@ -7,17 +7,19 @@
 </head>
 <body class="container">
 <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none" href="index.html">Easy
+    <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 fw-bolder fs-4 text-dark text-decoration-none"
+       href="index.html">Easy
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-        <li><a class="nav-link px-2 link-dark" href="#">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCustomerRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCustomerRent" style="display: none;">Rent</a>
+        </li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" type="button" id="btnCustomerLoginOut">Login</button>
+        <input class="btn btn-outline-primary me-2" id="btnCustomerLoginOut" type="button" value="Login"/>
     </div>
 </header>
 <form class="row g-3" id="newCustomerForm">
@@ -67,6 +69,12 @@
 <script>
     let credentials = null;
 
+    // function checkCustomerUser(username) {
+    //     if (username !== "admin@rent.lk") {
+    //         location.href = "index.html";
+    //     }
+    // }
+
     function checkCustomerLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
@@ -75,176 +83,213 @@
         }
         console.log(credentials);
 
-        if (credentials != null) {
+        if (credentials !== null) {
             // $('#lnkRent').css("display", "block");
-            $('#btnCustomerLoginOut').html("Logout");
+            // $('#btnCustomerLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
-            location.href = "index.html";
+            // location.href = "index.html";
+            // let username = credentials.username;
+            // checkCustomerUser(username);
+            // let btnLoginOut = document.getElementById("btnCustomerLoginOut");
+            // btnLoginOut.value = "Logout";
+
+            let username = credentials.username;
+            let btnLoginOut = document.getElementById("btnCustomerLoginOut");
+            if (username === "admin@rent.lk") {
+                // $('#lnkIndexRent').css("display", "none");
+                btnLoginOut.value = "Logout";
+                location.href = "index.html";
+                // btnPricingRent.value = "Pricing";
+            } else {
+                // $('#lnkIndexRent').css("display", "block");
+                // $('#btnIndexLoginOut').value("Logout");
+                // $('#btnIndexPricing').value("Rent");
+                //localStorage.removeItem("credentials");
+                // let btnLoginOut = document.getElementById("btnIndexLoginOut");
+                btnLoginOut.value = "Logout";
+                // let btnPricingRent = document.getElementById("btnIndexPricing");
+                // btnPricingRent.value = "Rent";
+            }
         }
     }
 
     checkCustomerLocalStorage();
 
     $('#btnCustomerLoginOut').click(function () {
-        if ($('#btnCustomerLoginOut').innerHTML == "Logout") {
+        let btnLoginOut = document.getElementById("btnCustomerLoginOut");
+
+        if (btnLoginOut.value === "Logout") {
             alert("Successfully Logged out of the System");
-            //$('#btnLoginOut').html("Login");
             localStorage.removeItem("credentials");
-            $('#btnCustomerLoginOut').html("Login");
+            btnLoginOut.value = "Login";
+        } else {
+            // let jsonString;
+            //
+            // async function asyncFunc() {
+            //     try {
+            //         const res = await $.ajax({
+            //             url: 'http://localhost:8080/rental/customer/cookie',
+            //             method: 'post',
+            //             data: localStorage.getItem("credentials"),
+            //             contentType: 'application/json',
+            //             success: function (resp) {
+            //                 console.log(resp.data);
+            //                 jsonString = JSON.stringify(resp.data);
+            //             }
+            //         }).then(() => {
+            //             localStorage.setItem("credentials", jsonString);
+            //             let user = localStorage.getItem("credentials");
+            //             alert("Your password : " + user.password);
+            //             location.href = "signin.html";
+            //         });
+            //     } catch (err) {
+            //         console.log(err);
+            //     }
+            // }
+            //
+            // asyncFunc();
+
+            location.href = "signin.html";
         }
     });
 
     $('#btnRegisterCustomer').click(function () {
-        let firstName = $('#inputFirstName').val();
-        let lastName = $('#inputLastName').val();
-        let address = $('#inputAddress').val();
-        let email = $('#inputEmail').val();
-        let contactNo = $('#inputContactNo').val();
-        let identity = $('#inputId').val();
-        let idCheck = $('#idImageCheck:checked').val();
+            let firstName = $('#inputFirstName').val();
+            let lastName = $('#inputLastName').val();
+            let address = $('#inputAddress').val();
+            let email = $('#inputEmail').val();
+            let contactNo = $('#inputContactNo').val();
+            let identity = $('#inputId').val();
+            let idCheck = $('#idImageCheck:checked').val();
 
-        let idImageExists;
-        if (idCheck === 'on') {
-            idImageExists = true;
-        } else {
-            idImageExists = false;
-        }
-
-        // let password = Math.floor(Math.random() * 10000);
-
-        // let user = {
-        //     password: password,
-        //     userCategory: "customer",
-        //     username: email
-        // }
-
-        let customer = {
-            address: address,
-            contactNo: contactNo,
-            email: email,
-            firstName: firstName,
-            idImage: idImageExists,
-            idType: identity,
-            lastName: lastName,
-        }
-
-        $.ajax({
-            url: 'http://localhost:8080/rental/customer',
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(customer),
-            // dataType: "json",
-            // success: function (resp) {
-            // },
-            error: function (error) {
-                let cause = JSON.parse(error.responseText).message;
-                alert(cause);
+            let idImageExists;
+            if (idCheck === 'on') {
+                idImageExists = true;
+            } else {
+                idImageExists = false;
             }
-        });
 
-        let credentials = {
-            username: email,
-            password: "",
-            userCategory: "customer"
-        }
+            // let password = Math.floor(Math.random() * 10000);
 
-        localStorage.setItem("credentials", JSON.stringify(credentials));
+            // let user = {
+            //     password: password,
+            //     userCategory: "customer",
+            //     username: email
+            // }
 
-        // sessionStorage.setItem("username", `${email}`)
-
-        // document.cookie = `username=${email}`;
-
-
-        // async function asyncFunc() {
-        //     try {
-        //         const res = await $.ajax({
-        //             url: 'http://localhost:8080/rental/user',
-        //             method: 'post',
-        //             contentType: 'application/json',
-        //             data: JSON.stringify(user),
-        //             dataType: "json",
-        //             success: function (resp) {
-        //                 userId = resp.data;
-        //             },
-        //             error: function (error) {
-        //                 let cause = JSON.parse(error.responseText).message;
-        //                 alert(cause);
-        //             }
-        //         }).then(() => {
-        //             customer = {
-        //                 address: address,
-        //                 contactNo: contactNo,
-        //                 email: email,
-        //                 firstName: firstName,
-        //                 idImage: idImageExists,
-        //                 idType: identity,
-        //                 lastName: lastName,
-        //                 user_userId: userId
-        //             }
-        //             //console.log(customer);
-        //
-        //             $.ajax({
-        //                 url: 'http://localhost:8080/rental/customer',
-        //                 method: 'post',
-        //                 contentType: 'application/json',
-        //                 data: JSON.stringify(customer),
-        //                 dataType: "json",
-        //                 success: function (resp) {
-        //                     console.log(resp);
-        //                 },
-        //                 error: function (error) {
-        //                     let cause = JSON.parse(error.responseText).message;
-        //                     alert(cause);
-        //                 }
-        //             });
-        //         });
-        //     } catch (err) {
-        //         console.log(err);
-        //     }
-        // }
-        //
-        // asyncFunc();
-
-
-    });
-
-    $('#btnCustomerLoginOut').click(function () {
-        // $.ajax({
-        //     url: 'http://localhost:8080/rental/customer/cookie',
-        //     //headers: {'Access-Control-Allow-Credentials': true},
-        //     //contentType: "text/plain",
-        //     xhrFields: { withCredentials:true },
-        //     //cookie: document.cookie,
-        //     //crossDomain: true
-        // });
-
-        //JSON.stringify(sessionStorage.credentials),
-
-        let jsonString;
-
-        async function asyncFunc() {
-            try {
-                const res = await $.ajax({
-                    url: 'http://localhost:8080/rental/customer/cookie',
-                    method: 'post',
-                    data: localStorage.getItem("credentials"),
-                    contentType: 'application/json',
-                    success: function (resp) {
-                        console.log(resp.data);
-                        jsonString = JSON.stringify(resp.data);
-                    }
-                }).then(() => {
-                    localStorage.setItem("credentials", jsonString);
-                    location.href = "signin.html";
-                });
-            } catch (err) {
-                console.log(err);
+            let customer = {
+                address: address,
+                contactNo: contactNo,
+                email: email,
+                firstName: firstName,
+                idImage: idImageExists,
+                idType: identity,
+                lastName: lastName,
             }
+
+            let username = "";
+            let password = "";
+            let userCategory = "";
+
+
+            async function asyncFunc() {
+                try {
+                    const res = await $.ajax({
+                        url: 'http://localhost:8080/rental/customer',
+                        method: 'post',
+                        contentType: 'application/json',
+                        data: JSON.stringify(customer),
+                        dataType: "json",
+                        success: function (resp) {
+                            username = resp.data.username;
+                            password = resp.data.password;
+                            userCategory = resp.data.userCategory;
+                        },
+                        error: function (error) {
+                            let cause = JSON.parse(error.responseText).message;
+                            alert(cause);
+                        }
+                    }).then(() => {
+                        let credentials = {
+                            username: username,
+                            password: password,
+                            userCategory: userCategory
+                        }
+                        localStorage.setItem("credentials", JSON.stringify(credentials));
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            asyncFunc();
+
+            let user = localStorage.getItem("credentials");
+            if (user !== null) {
+                alert("Please login with your email and your password : " + user.password + "\nPlease change your password once logged in");
+            } else {
+                alert("Please create your customer account");
+            }
+
+
+            // sessionStorage.setItem("username", `${email}`)
+
+            // document.cookie = `username=${email}`;
+
+
+            // async function asyncFunc() {
+            //     try {
+            //         const res = await $.ajax({
+            //             url: 'http://localhost:8080/rental/user',
+            //             method: 'post',
+            //             contentType: 'application/json',
+            //             data: JSON.stringify(user),
+            //             dataType: "json",
+            //             success: function (resp) {
+            //                 userId = resp.data;
+            //             },
+            //             error: function (error) {
+            //                 let cause = JSON.parse(error.responseText).message;
+            //                 alert(cause);
+            //             }
+            //         }).then(() => {
+            //             customer = {
+            //                 address: address,
+            //                 contactNo: contactNo,
+            //                 email: email,
+            //                 firstName: firstName,
+            //                 idImage: idImageExists,
+            //                 idType: identity,
+            //                 lastName: lastName,
+            //                 user_userId: userId
+            //             }
+            //             //console.log(customer);
+            //
+            //             $.ajax({
+            //                 url: 'http://localhost:8080/rental/customer',
+            //                 method: 'post',
+            //                 contentType: 'application/json',
+            //                 data: JSON.stringify(customer),
+            //                 dataType: "json",
+            //                 success: function (resp) {
+            //                     console.log(resp);
+            //                 },
+            //                 error: function (error) {
+            //                     let cause = JSON.parse(error.responseText).message;
+            //                     alert(cause);
+            //                 }
+            //             });
+            //         });
+            //     } catch (err) {
+            //         console.log(err);
+            //     }
+            // }
+            //
+            // asyncFunc();
+
+
         }
-
-        asyncFunc();
-
-    });
+    );
 </script>
 </body>
 </html>

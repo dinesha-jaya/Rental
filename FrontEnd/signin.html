@@ -15,12 +15,12 @@
             <label for="floatingInput">Email address</label>
         </div>
         <div class="form-floating mb-3">
-            <input class="form-control" id="floatingPassword" id placeholder="Password" type="password">
+            <input class="form-control" id="floatingPassword" placeholder="Password" type="password">
             <label for="floatingPassword">Password</label>
         </div>
         <button class="w-100 btn btn-lg btn-primary" id="btnSignin" type="button">Sign In</button>
         <hr class="my-4">
-        <small class="text-muted">No Account? <a href="customer.html"> Register </a> or <a href="">Continue
+        <small class="text-muted">No Account? <a href="customer.html"> Register </a> or <a href="index.html">Continue
             Guest</a></small>
     </form>
 </div>
@@ -31,14 +31,34 @@
 
 <script>
     // console.log(sessionStorage.getItem(JSON.parse(credentials)));
-    console.log(localStorage.getItem("credentials"));
+    // console.log(localStorage.getItem("credentials"));
+    //
+    // let credentials = JSON.parse(localStorage.getItem("credentials"));
+    // if (credentials != null) {
+    //     $('#floatingInput').val(credentials.username);
+    //     $('#floatingPassword').val(credentials.password);
+    //     localStorage.removeItem("credentials");
+    // }
 
-    let credentials = JSON.parse(localStorage.getItem("credentials"));
-    if (credentials != null) {
-        $('#floatingInput').val(credentials.username);
-        $('#floatingPassword').val(credentials.password);
-        localStorage.removeItem("credentials");
+    let credentials = null;
+
+    function checkRentLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(credentials);
+
+        if (credentials != null) {
+            $('#floatingInput').val(credentials.username);
+            // $('#lnkRent').css("display", "block");
+            // $('#btnRentLoginOut').html("Logout");
+            //localStorage.removeItem("credentials");
+        }
     }
+
+    checkRentLocalStorage();
 
     $('#btnSignin').click(function () {
         let username = $('#floatingInput').val();
@@ -94,7 +114,7 @@
         }
         asyncFunction2();
 
-    })
+    });
 
 
 </script>
