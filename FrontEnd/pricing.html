@@ -12,6 +12,7 @@
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-dark" id="lnkPricingHome" style="display: none;">Home</a></li>
         <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
         <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkPricingRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
@@ -118,10 +119,10 @@
         // console.log(credentials);
 
         let btnLoginOut = document.getElementById("btnPricingLoginOut");
+        let home = document.getElementById("lnkPricingHome");
 
         if (credentials != null) {
             let username = credentials.username;
-
 
             if (username !== null) {
                 // $('#lnkAdminDBRent').css("display", "block");
@@ -129,9 +130,13 @@
                 //localStorage.removeItem("credentials");
                 btnLoginOut.value = "Logout";
                 if (username === "admin@rent.lk") {
+                    home.setAttribute("href", "admindashboard.html");
                     $('#lnkPricingRent').css("display", "none");
+                    $('#lnkPricingHome').css("display", "block");
                 } else {
+                    home.setAttribute("href", "customerdashboard.html");
                     $('#lnkPricingRent').css("display", "block");
+                    $('#lnkPricingHome').css("display", "block");
                 }
             } else {
                 $('#lnkPricingRent').css("display", "none");
@@ -155,6 +160,7 @@
             localStorage.removeItem("credentials");
             alert("Successfully Logged out of the System");
             btnLoginOut.value = "Login";
+            $('#lnkPricingHome').css("display", "none");
             // btnPricingRent.value = "Pricing";
             // $('#lnkAdminDBRent').css("display", "none");
         } else {

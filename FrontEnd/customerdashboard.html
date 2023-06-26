@@ -13,7 +13,8 @@
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="customerdashboard.html" id="lnkCustomerDBHome">Home</a></li>
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
         <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCustomerDBRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
@@ -83,10 +84,11 @@
         // let btnPricingRent = document.getElementById("btnIndexPricing");
         if (btnLoginOut.value === "Logout") {
             localStorage.removeItem("credentials");
-            alert("Successfully Logged out of the System");
             btnLoginOut.value = "Login";
-            // btnPricingRent.value = "Pricing";
             $('#lnkCustomerDBRent').css("display", "none");
+            alert("Successfully Logged out of the System");
+            location.href = "index.html";
+            // btnPricingRent.value = "Pricing";
         } else {
             location.href = "signin.html";
         }

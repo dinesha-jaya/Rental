@@ -12,9 +12,9 @@
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-dark" id="lnkCustomerHome" style="display: none;">Home</a></li>
         <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCustomerRent" style="display: none;">Rent</a>
-        </li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkCustomerRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
@@ -84,6 +84,7 @@
         console.log(credentials);
 
         if (credentials !== null) {
+            location.href = "index.html";
             // $('#lnkRent').css("display", "block");
             // $('#btnCustomerLoginOut').html("Logout");
             //localStorage.removeItem("credentials");
@@ -93,25 +94,27 @@
             // let btnLoginOut = document.getElementById("btnCustomerLoginOut");
             // btnLoginOut.value = "Logout";
 
-            let username = credentials.username;
-            let btnLoginOut = document.getElementById("btnCustomerLoginOut");
-            if (username === "admin@rent.lk") {
-                // $('#lnkIndexRent').css("display", "none");
-                // btnLoginOut.value = "Logout";
-                location.href = "index.html";
-                // btnPricingRent.value = "Pricing";
-            } else {
-                // $('#lnkIndexRent').css("display", "block");
-                // $('#btnIndexLoginOut').value("Logout");
-                // $('#btnIndexPricing').value("Rent");
-                //localStorage.removeItem("credentials");
-                // let btnLoginOut = document.getElementById("btnIndexLoginOut");
-                btnLoginOut.value = "Logout";
-                // let btnPricingRent = document.getElementById("btnIndexPricing");
-                // btnPricingRent.value = "Rent";
-            }
-        } else {
-            location.href = "index.html";
+            // let username = credentials.username;
+            // let btnLoginOut = document.getElementById("btnCustomerLoginOut");
+            // //let home = document.getElementById("lnkCustomerHome");
+            // if (username === "admin@rent.lk") {
+            //     // $('#lnkIndexRent').css("display", "none");
+            //     // btnLoginOut.value = "Logout";
+            //     location.href = "index.html";
+            //     // btnPricingRent.value = "Pricing";
+            // } else {
+            //     // home.setAttribute("href", "customerdashboard.html");
+            //     // // $('#lnkIndexRent').css("display", "block");
+            //     // // $('#btnIndexLoginOut').value("Logout");
+            //     // // $('#btnIndexPricing').value("Rent");
+            //     // //localStorage.removeItem("credentials");
+            //     // // let btnLoginOut = document.getElementById("btnIndexLoginOut");
+            //     // btnLoginOut.value = "Logout";
+            //     // // let btnPricingRent = document.getElementById("btnIndexPricing");
+            //     // // btnPricingRent.value = "Rent";
+            //     // $('#lnkCustomerHome').css("display", "block");
+            //
+            // }
         }
     }
 
@@ -122,8 +125,9 @@
 
         if (btnLoginOut.value === "Logout") {
             localStorage.removeItem("credentials");
-            alert("Successfully Logged out of the System");
             btnLoginOut.value = "Login";
+            alert("Successfully Logged out of the System");
+            location.href = "index.html";
         } else {
             // let jsonString;
             //
@@ -218,6 +222,20 @@
                             userCategory: userCategory
                         }
                         localStorage.setItem("credentials", JSON.stringify(credentials));
+                    }).then(() => {
+                        let user = null;
+
+                        try {
+                            user = JSON.parse(localStorage.getItem("credentials"));
+                        } catch (err) {
+                            console.log(err);
+                        }
+
+                        if (user !== null) {
+                            alert("Please login with your email and your password : " + user.password + "\nPlease change your password once logged in");
+                        } else {
+                            alert("Please create your customer account");
+                        }
                     });
                 } catch (err) {
                     console.log(err);
@@ -225,13 +243,6 @@
             }
 
             asyncFunc();
-
-            let user = localStorage.getItem("credentials");
-            if (user !== null) {
-                alert("Please login with your email and your password : " + user.password + "\nPlease change your password once logged in");
-            } else {
-                alert("Please create your customer account");
-            }
 
 
             // sessionStorage.setItem("username", `${email}`)

@@ -13,7 +13,8 @@
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" href="admindashboard.html" id="lnkAdminDBHome">Home</a></li>
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
         <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkAdminDBRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
@@ -23,9 +24,9 @@
     </div>
 </header>
 
-<form class="row g-3" id="admindashboardform">
+<form class="row g-3" id="adminDBForm">
     <div class="col-12">
-        <label class="form-label fw-bolder fs-5" for="admindashboardform">Admin Dashboard</label>
+        <label class="form-label fw-bolder fs-5" for="adminDBForm">Admin Dashboard</label>
     </div>
 <!--    <table class="table">-->
 <!--        <thead>-->
@@ -68,11 +69,14 @@
         if (credentials != null) {
             let username = credentials.username;
             if (username === "admin@rent.lk") {
+                // let home = document.getElementById("lnkAdminDBHome");
+                // home.setAttribute("href", "admindashboard.html");
                 // $('#lnkAdminDBRent').css("display", "block");
                 // $('#btnCustomerDBLoginOut').html("Logout");
                 //localStorage.removeItem("credentials");
                 let btnLoginOut = document.getElementById("btnAdminDBLoginOut");
                 btnLoginOut.value = "Logout";
+                // $('#lnkAdminDBHome').css("display", "block");
             } else {
                 location.href = "customerdashboard.html";
             }
@@ -91,6 +95,7 @@
             localStorage.removeItem("credentials");
             alert("Successfully Logged out of the System");
             btnLoginOut.value = "Login";
+            location.href = "index.html";
             // btnPricingRent.value = "Pricing";
             // $('#lnkAdminDBRent').css("display", "none");
         } else {

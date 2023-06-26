@@ -13,7 +13,8 @@
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" id="lnkIndexHome" style="display: none;">Home</a></li>
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
         <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkIndexRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
@@ -54,12 +55,16 @@
             let username = credentials.username;
             let btnLoginOut = document.getElementById("btnIndexLoginOut");
             let btnPricingRent = document.getElementById("btnIndexPricing");
+            let home = document.getElementById("lnkIndexHome");
             if (username === "admin@rent.lk") {
                 $('#lnkIndexRent').css("display", "none");
+                home.setAttribute("href", "admindashboard.html");
                 btnLoginOut.value = "Logout";
                 btnPricingRent.value = "Pricing";
+                $('#lnkIndexHome').css("display", "block");
             } else {
                 $('#lnkIndexRent').css("display", "block");
+                home.setAttribute("href", "customerdashboard.html");
                 // $('#btnIndexLoginOut').value("Logout");
                 // $('#btnIndexPricing').value("Rent");
                 //localStorage.removeItem("credentials");
@@ -67,6 +72,7 @@
                 btnLoginOut.value = "Logout";
                 // let btnPricingRent = document.getElementById("btnIndexPricing");
                 btnPricingRent.value = "Rent";
+                $('#lnkIndexHome').css("display", "block");
             }
 
 
@@ -84,6 +90,7 @@
             btnLoginOut.value = "Login";
             btnPricingRent.value = "Pricing";
             $('#lnkIndexRent').css("display", "none");
+            $('#lnkIndexHome').css("display", "none");
         } else {
             location.href = "signin.html";
         }

@@ -13,6 +13,7 @@
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a class="nav-link px-2 link-dark" href="customerdashboard.html" id="lnkCustomerDBHome">Home</a></li>
         <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
         <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
@@ -25,7 +26,7 @@
     <div class="col-12">
         <label class="form-label fw-bolder fs-5" for="makeRentForm">Make Rent</label>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <label class="form-label" for="inputRentDurationPlan">Rent Duration Plan</label>
         <select class="form-select" id="inputRentDurationPlan" name="inputRentDurationPlan">
             <option>Daily</option>
@@ -110,10 +111,11 @@
         // let btnPricingRent = document.getElementById("btnIndexPricing");
         if (btnLoginOut.value === "Logout") {
             localStorage.removeItem("credentials");
-            alert("Successfully Logged out of the System");
             btnLoginOut.value = "Login";
             // btnPricingRent.value = "Pricing";
             $('#lnkRentRent').css("display", "none");
+            alert("Successfully Logged out of the System");
+            location.href = "index.html";
         } else {
             location.href = "signin.html";
         }
