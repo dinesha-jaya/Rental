@@ -91,13 +91,40 @@
         console.log(rental);
 
         if (credentials != null) {
-            // $('#lnkRent').css("display", "block");
-            $('#btnRentStartSummaryLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
+            let username = credentials.username;
+            if (username !== null) {
+                let btnLoginOut = document.getElementById("btnRentStartSummaryLoginOut");
+                btnLoginOut.value = "Logout";
+                // location.href = "admindashboard.html";
+                if (username === "admin@rent.lk") {
+                    let btnToRentEnd = $('<button class="btn btn-primary" id="btnProceedToRentEnd" type="button">End the Rent</button>');
+                    $('#divRentStartSummary').append(btnToRentEnd);
+                }
+            } else {
+                location.href = "index.html";
+            }
+        } else {
+            location.href = "index.html";
         }
     }
 
     checkRentStartSummaryLocalStorage();
+
+    $('#btnRentStartSummaryLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnRentStartSummaryLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            localStorage.removeItem("rental");
+            btnLoginOut.value = "Login";
+            alert("Successfully Logged out of the System, will be redirected to Home page");
+            location.href = "index.html";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     function displayRentStartSummary(data) {
         $('#lblRentStartSummary').html('Rent Summary - ' + data.customerFirstName + ' ' + data.customerLastName + ' - ' + data.rentStatus.toUpperCase());
@@ -119,12 +146,6 @@
             }
             let row = `<tr><td>${car.brand}</td><td>${car.registrationNo}</td><td>${car.rate}</td><td>${car.freeKms}</td><td>${car.pricePerExtraKm}</td><td>${submitLossDamageWaiverPaymentReceipt}</td><td>${car.driverName}</td><td>${car.driverContactNo}</td><td>${car.meterStart}</td></tr>`;
             $('#tblRentStartCarsSummary').append(row);
-
-        }
-
-        if (credentials.userCategory === "admin") {
-            let btnToRentEnd = $('<button class="btn btn-primary" id="btnProceedToRentEnd" type="button">End the Rent</button>');
-            $('#divRentStartSummary').append(btnToRentEnd);
         }
     }
 

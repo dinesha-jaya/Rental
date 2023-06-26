@@ -19,7 +19,7 @@
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnAdminDBLoginOut" type="button">Login</button>
+        <input class="btn btn-outline-primary me-2" id="btnAdminDBLoginOut" type="button" value="Login"/>
     </div>
 </header>
 
@@ -57,30 +57,46 @@
 <script>
     let credentials = null;
 
-    function checkAdminDBUser(username) {
-        if (username !== "admin@rent.lk") {
-            location.href = "index.html";
-        }
-    }
-
     function checkAdminDBLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
             console.log(err);
         }
-        console.log(credentials);
+        // console.log(credentials);
 
         if (credentials != null) {
-            // $('#lnkRent').css("display", "block");
-            $('#btnAdminDBLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkAdminDBUser(username);
+            if (username === "admin@rent.lk") {
+                // $('#lnkAdminDBRent').css("display", "block");
+                // $('#btnCustomerDBLoginOut').html("Logout");
+                //localStorage.removeItem("credentials");
+                let btnLoginOut = document.getElementById("btnAdminDBLoginOut");
+                btnLoginOut.value = "Logout";
+            } else {
+                location.href = "customerdashboard.html";
+            }
+
+        } else {
+            location.href = "index.html";
         }
     }
 
     checkAdminDBLocalStorage();
+
+    $('#btnAdminDBLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnAdminDBLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            alert("Successfully Logged out of the System");
+            btnLoginOut.value = "Login";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     $('#btnStartRents').click(function () {
         location.href = "adminstartrents.html";

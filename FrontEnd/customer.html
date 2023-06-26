@@ -97,7 +97,7 @@
             let btnLoginOut = document.getElementById("btnCustomerLoginOut");
             if (username === "admin@rent.lk") {
                 // $('#lnkIndexRent').css("display", "none");
-                btnLoginOut.value = "Logout";
+                // btnLoginOut.value = "Logout";
                 location.href = "index.html";
                 // btnPricingRent.value = "Pricing";
             } else {
@@ -110,6 +110,8 @@
                 // let btnPricingRent = document.getElementById("btnIndexPricing");
                 // btnPricingRent.value = "Rent";
             }
+        } else {
+            location.href = "index.html";
         }
     }
 
@@ -119,8 +121,8 @@
         let btnLoginOut = document.getElementById("btnCustomerLoginOut");
 
         if (btnLoginOut.value === "Logout") {
-            alert("Successfully Logged out of the System");
             localStorage.removeItem("credentials");
+            alert("Successfully Logged out of the System");
             btnLoginOut.value = "Login";
         } else {
             // let jsonString;

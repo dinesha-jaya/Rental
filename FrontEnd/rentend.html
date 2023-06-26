@@ -50,12 +50,6 @@
     let credentials = null;
     let rental = null;
 
-    function checkRentEndAdmin(username) {
-        if (username !== "admin@rent.lk") {
-            location.href = "index.html";
-        }
-    }
-
     function checkRentEndLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
@@ -67,15 +61,36 @@
         console.log(rental);
 
         if (credentials != null) {
-            // $('#lnkRent').css("display", "block");
-            $('#btnRentEndLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkRentEndAdmin(username);
+            if (username === "admin@rent.lk") {
+                let btnLoginOut = document.getElementById("btnRentEndLoginOut");
+                btnLoginOut.value = "Logout";
+                // location.href = "admindashboard.html";
+            } else {
+                location.href = "customerdashboard.html";
+            }
+        } else {
+            location.href = "index.html";
         }
     }
 
     checkRentEndLocalStorage();
+
+    $('#btnRentEndLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnRentEndLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            localStorage.removeItem("rental");
+            btnLoginOut.value = "Login";
+            alert("Successfully Logged out of the System, will be redirected to Home page");
+            location.href = "index.html";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     function bindTblRentEndCarsRowClickEvents() {
         $('#tblRentEndCars > tr').click(function () {

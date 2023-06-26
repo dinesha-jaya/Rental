@@ -19,7 +19,7 @@
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnRentSummaryLoginOut" type="button">Login</button>
+        <input class="btn btn-outline-primary me-2" id="btnRentSummaryLoginOut" type="button" value="Login"/>
     </div>
 </header>
 
@@ -88,17 +88,44 @@
         } catch (err) {
             console.log(err);
         }
-        console.log(credentials);
-        console.log(rental);
+        // console.log(credentials);
+        // console.log(rental);
 
         if (credentials != null) {
-            // $('#lnkRent').css("display", "block");
-            $('#btnRentSummaryLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
+            let username = credentials.username;
+            if (username !== null) {
+                let btnLoginOut = document.getElementById("btnRentSummaryLoginOut");
+                btnLoginOut.value = "Logout";
+                // location.href = "admindashboard.html";
+                if (username === "admin@rent.lk") {
+                    let btnToRent = $('<button class="btn btn-primary" id="btnProceedToRent" type="button">Proceed to Rent</button>');
+                    $('#divRentSummary').append(btnToRent);
+                }
+            } else {
+                location.href = "index.html";
+            }
+        } else {
+            location.href = "index.html";
         }
     }
 
     checkRentSummaryLocalStorage();
+
+    $('#btnRentSummaryLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnRentSummaryLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            localStorage.removeItem("rental");
+            btnLoginOut.value = "Login";
+            alert("Successfully Logged out of the System, will be redirected to Home page");
+            location.href = "index.html";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     function displayRentSummary(data) {
         $('#lblRentSummary').html('Rent Summary - ' + data.customerFirstName + ' ' + data.customerLastName + ' - ' + data.rentStatus.toUpperCase());
@@ -116,12 +143,6 @@
         for (let car of rentCarDTOs) {
             let row = `<tr><td>${car.brand}</td><td>${car.registrationNo}</td><td>${car.noOfPassengers}</td><td>${car.transmissionType}</td><td>${car.fuelType}</td><td>${car.rate}</td><td>${car.freeKms}</td><td>${car.pricePerExtraKm}</td><td>${car.driverName}</td><td>${car.driverContactNo}</td></tr>`;
             $('#tblRentedCarsSummary').append(row);
-
-        }
-
-        if (credentials.userCategory === "admin") {
-            let btnToRent = $('<button class="btn btn-primary" id="btnProceedToRent" type="button">Proceed to Rent</button>');
-            $('#divRentSummary').append(btnToRent);
         }
     }
 

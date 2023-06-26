@@ -17,7 +17,7 @@
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" type="button">Login</button>
+        <input class="btn btn-outline-primary me-2" type="button" value="Login"/>
     </div>
 </header>
 
@@ -117,6 +117,49 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery-3.6.3.min.js"></script>
 <script>
+    let credentials = null;
+
+    function checkCarLocalStorage() {
+        try {
+            credentials = JSON.parse(localStorage.getItem("credentials"));
+        } catch (err) {
+            console.log(err);
+        }
+        // console.log(credentials);
+
+        if (credentials != null) {
+            let username = credentials.username;
+            if (username === "admin@rent.lk") {
+                // $('#lnkAdminDBRent').css("display", "block");
+                // $('#btnCustomerDBLoginOut').html("Logout");
+                //localStorage.removeItem("credentials");
+                let btnLoginOut = document.getElementById("btnCarLoginOut");
+                btnLoginOut.value = "Logout";
+            } else {
+                location.href = "customerdashboard.html";
+            }
+
+        } else {
+            location.href = "index.html";
+        }
+    }
+
+    checkCarLocalStorage();
+
+    $('#btnCarLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnCarLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            alert("Successfully Logged out of the System");
+            btnLoginOut.value = "Login";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
+
     getAllCars();
 
     $('#btnAddCar').click(function () {

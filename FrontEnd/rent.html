@@ -18,14 +18,14 @@
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnRentLoginOut" type="button">Login</button>
+        <input class="btn btn-outline-primary me-2" id="btnRentLoginOut" type="button" value="Login"/>
     </div>
 </header>
 <form class="row g-3" id="makeRentForm">
     <div class="col-12">
         <label class="form-label fw-bolder fs-5" for="makeRentForm">Make Rent</label>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <label class="form-label" for="inputRentDurationPlan">Rent Duration Plan</label>
         <select class="form-select" id="inputRentDurationPlan" name="inputRentDurationPlan">
             <option>Daily</option>
@@ -92,10 +92,10 @@
             if (username === "admin@rent.lk") {
                 location.href = "admindashboard.html";
             } else {
-                $('#lnkCustomerDBRent').css("display", "block");
+                // $('#lnkRentRent').css("display", "block");
                 // $('#btnCustomerDBLoginOut').html("Logout");
                 //localStorage.removeItem("credentials");
-                let btnLoginOut = document.getElementById("btnCustomerDBLoginOut");
+                let btnLoginOut = document.getElementById("btnRentLoginOut");
                 btnLoginOut.value = "Logout";
             }
         } else {

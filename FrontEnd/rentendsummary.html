@@ -88,13 +88,40 @@
         console.log(rental);
 
         if (credentials != null) {
-            // $('#lnkRent').css("display", "block");
-            $('#btnRentEndSummaryLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
+            let username = credentials.username;
+            if (username !== null) {
+                let btnLoginOut = document.getElementById("btnRentEndSummaryLoginOut");
+                btnLoginOut.value = "Logout";
+                // location.href = "admindashboard.html";
+                if (username === "admin@rent.lk") {
+                    let btnToRentPay = $('<button class="btn btn-primary" id="btnRentPay" type="button">Pay</button>');
+                    $('#divRentPay').append(btnToRentPay);
+                }
+            } else {
+                location.href = "index.html";
+            }
+        } else {
+            location.href = "index.html";
         }
     }
 
     checkRentEndSummaryLocalStorage();
+
+    $('#btnRentEndSummaryLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnRentEndSummaryLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            localStorage.removeItem("rental");
+            btnLoginOut.value = "Login";
+            alert("Successfully Logged out of the System, will be redirected to Home page");
+            location.href = "index.html";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     function displayRentEndSummary(data) {
         let startDate = new Date(data.rentStartDate);
@@ -117,14 +144,10 @@
             $('#tblRentEndCarsSummary').append(row);
 
         }
-
-        if (credentials.userCategory === "admin") {
-            let btnToRentPay = $('<button class="btn btn-primary" id="btnRentPay" type="button">Pay</button>');
-            $('#divRentPay').append(btnToRentPay);
-        }
     }
 
     $('#divRentPay').on('click', '#btnRentPay', function () {
+        alert("Paid");
 
     });
 

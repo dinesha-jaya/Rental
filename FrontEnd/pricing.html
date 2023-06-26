@@ -18,7 +18,7 @@
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" type="button" id="btnPricingLoginOut">Login</button>
+        <input class="btn btn-outline-primary me-2" id="btnPricingLoginOut" type="button" value="Login"/>
     </div>
 </header>
 <main>
@@ -109,22 +109,58 @@
 <script>
     let credentials = null;
 
-    function checkLocalStorage() {
+    function checkPricingLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
             console.log(err);
         }
-        console.log(credentials);
+        // console.log(credentials);
+
+        let btnLoginOut = document.getElementById("btnPricingLoginOut");
 
         if (credentials != null) {
-            $('#lnkPricingRent').css("display", "block");
-            $('#btnPricingLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
+            let username = credentials.username;
+
+
+            if (username !== null) {
+                // $('#lnkAdminDBRent').css("display", "block");
+                // $('#btnCustomerDBLoginOut').html("Logout");
+                //localStorage.removeItem("credentials");
+                btnLoginOut.value = "Logout";
+                if (username === "admin@rent.lk") {
+                    $('#lnkPricingRent').css("display", "none");
+                } else {
+                    $('#lnkPricingRent').css("display", "block");
+                }
+            } else {
+                $('#lnkPricingRent').css("display", "none");
+                btnLoginOut.value = "Login";
+                // location.href = "index.html";
+            }
+
+        } else {
+            $('#lnkPricingRent').css("display", "none");
+            btnLoginOut.value = "Login";
+            // location.href = "index.html";
         }
     }
 
-    checkLocalStorage();
+    checkPricingLocalStorage();
+
+    $('#btnPricingLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnPricingLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            alert("Successfully Logged out of the System");
+            btnLoginOut.value = "Login";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     function getCars(carType) {
         $('#tblPricing').empty();

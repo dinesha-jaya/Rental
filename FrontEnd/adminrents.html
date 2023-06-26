@@ -14,12 +14,12 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
-        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentsRent" style="display: none;">Rent</a></li>
+        <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkAdminRentsRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
 
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnRentsLoginOut" type="button">Login</button>
+        <input class="btn btn-outline-primary me-2" id="btnAdminRentsLoginOut" type="button" value="Login"/>
     </div>
 </header>
 
@@ -46,30 +46,46 @@
 <script>
     let credentials = null;
 
-    function checkRentsUser(username) {
-        if (username !== "admin@rent.lk") {
-            location.href = "index.html";
-        }
-    }
-
-    function checkRentsLocalStorage() {
+    function checkAdminRentsLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
         } catch (err) {
             console.log(err);
         }
-        console.log(credentials);
+        // console.log(credentials);
 
         if (credentials != null) {
-            // $('#lnkRent').css("display", "block");
-            $('#btnRentsLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkRentsUser(username);
+            if (username === "admin@rent.lk") {
+                // $('#lnkAdminDBRent').css("display", "block");
+                // $('#btnCustomerDBLoginOut').html("Logout");
+                //localStorage.removeItem("credentials");
+                let btnLoginOut = document.getElementById("btnAdminRentsLoginOut");
+                btnLoginOut.value = "Logout";
+            } else {
+                location.href = "customerdashboard.html";
+            }
+
+        } else {
+            location.href = "index.html";
         }
     }
 
-    checkRentsLocalStorage();
+    checkAdminRentsLocalStorage();
+
+    $('#btnAdminRentsLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnAdminRentsLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            alert("Successfully Logged out of the System");
+            btnLoginOut.value = "Login";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     async function getAllRents() {
         try {
@@ -129,12 +145,15 @@
             }
             localStorage.setItem("rental", JSON.stringify(rental));
 
-            if (status === "rent") {
+            if (status === "pending") {
+                location.href = "rentsummary.html";
+            } else if (status === "current") {
                 location.href = "rentstartsummary.html";
-            } else if (status === "rent end") {
+            } else if (status === "end") {
+                location.href = "rentendsummary.html";
+            } else {
                 location.href = "rentendsummary.html";
             }
-
         });
     }
 

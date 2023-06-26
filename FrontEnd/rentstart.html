@@ -18,7 +18,7 @@
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
     <div class="col-md-3 text-end">
-        <button class="btn btn-outline-primary me-2" id="btnRentStartLoginOut" type="button">Login</button>
+        <input class="btn btn-outline-primary me-2" id="btnRentStartLoginOut" type="button" value="Login"/>
     </div>
 </header>
 <form class="row g-3" id="rentStartForm">
@@ -70,12 +70,6 @@
     let credentials = null;
     let rental = null;
 
-    function checkRentStartAdmin(username) {
-        if (username !== "admin@rent.lk") {
-            location.href = "index.html";
-        }
-    }
-
     function checkRentStartLocalStorage() {
         try {
             credentials = JSON.parse(localStorage.getItem("credentials"));
@@ -87,15 +81,36 @@
         console.log(rental);
 
         if (credentials != null) {
-            // $('#lnkRent').css("display", "block");
-            $('#btnRentStartLoginOut').html("Logout");
-            //localStorage.removeItem("credentials");
             let username = credentials.username;
-            checkRentStartAdmin(username);
+            if (username === "admin@rent.lk") {
+                let btnLoginOut = document.getElementById("btnRentStartLoginOut");
+                btnLoginOut.value = "Logout";
+                // location.href = "admindashboard.html";
+            } else {
+                location.href = "customerdashboard.html";
+            }
+        } else {
+            location.href = "index.html";
         }
     }
 
     checkRentStartLocalStorage();
+
+    $('#btnRentStartLoginOut').click(function () {
+        let btnLoginOut = document.getElementById("btnRentStartLoginOut");
+        // let btnPricingRent = document.getElementById("btnIndexPricing");
+        if (btnLoginOut.value === "Logout") {
+            localStorage.removeItem("credentials");
+            localStorage.removeItem("rental");
+            btnLoginOut.value = "Login";
+            alert("Successfully Logged out of the System, will be redirected to Home page");
+            location.href = "index.html";
+            // btnPricingRent.value = "Pricing";
+            // $('#lnkAdminDBRent').css("display", "none");
+        } else {
+            location.href = "signin.html";
+        }
+    });
 
     function bindTblRentStartCarDetailsRowClickEvents() {
         $('#tblRentStartCarDetails > tr').click(function () {
