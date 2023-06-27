@@ -91,7 +91,7 @@
     async function getAllPendingCustomerRentals() {
         try {
             let responds = await $.ajax({
-                url: 'http://localhost:8080/rental/rent/customer?customerEmail' + credentials.username,
+                url: 'http://localhost:8080/rental/rent/pending/customer?email' + credentials.username,
                 dataType: 'json',
                 success: function (resp) {
                     for (let rent of resp.data) {
