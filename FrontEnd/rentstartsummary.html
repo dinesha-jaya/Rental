@@ -13,7 +13,8 @@
         Car Rental</a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-        <li><a class="nav-link px-2 link-secondary" href="pricing.html">Pricing</a></li>
+        <li><a class="nav-link px-2 link-dark" id="lnkRentStartSummaryHome" style="display: none;">Home</a></li>
+        <li><a class="nav-link px-2 link-dark" href="pricing.html">Pricing</a></li>
         <li><a class="nav-link px-2 link-dark" href="rent.html" id="lnkRentStartSummaryRent" style="display: none;">Rent</a></li>
         <li><a class="nav-link px-2 link-dark" href="#">Contact</a></li>
     </ul>
@@ -92,13 +93,19 @@
 
         if (credentials != null) {
             let username = credentials.username;
+            let home = document.getElementById("lnkRentStartSummaryHome");
             if (username !== null) {
                 let btnLoginOut = document.getElementById("btnRentStartSummaryLoginOut");
                 btnLoginOut.value = "Logout";
                 // location.href = "admindashboard.html";
                 if (username === "admin@rent.lk") {
+                    home.setAttribute("href", "admindashboard.html");
                     let btnToRentEnd = $('<button class="btn btn-primary" id="btnProceedToRentEnd" type="button">End the Rent</button>');
                     $('#divRentStartSummary').append(btnToRentEnd);
+                    $('#lnkRentStartSummaryHome').css("display", "block");
+                } else {
+                    home.setAttribute("href", "customerdashboard.html");
+                    $('#lnkRentStartSummaryHome').css("display", "block");
                 }
             } else {
                 location.href = "index.html";
@@ -117,6 +124,7 @@
             localStorage.removeItem("credentials");
             localStorage.removeItem("rental");
             btnLoginOut.value = "Login";
+            $('#lnkRentStartSummaryHome').css("display", "none");
             alert("Successfully Logged out of the System, will be redirected to Home page");
             location.href = "index.html";
             // btnPricingRent.value = "Pricing";
