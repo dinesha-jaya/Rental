@@ -43,14 +43,15 @@ public class RentController {
     }
 
     @GetMapping("/customer")
-    @ResponseBody
     public ResponseUtil getCustomerRentalsNotPending(@RequestParam("email") String email) {
+        System.out.println(email);
         ArrayList<RentDTO> allPendingCustomerRentals = rentService.getCustomerRentalsNotPending(email);
         return new ResponseUtil("200", " Success.!", allPendingCustomerRentals);
     }
 
     @GetMapping("/pending/customer")
     public ResponseUtil getCustomerPendingRentals(@RequestParam("email") String email) {
+        System.out.println(email);
         ArrayList<RentDTO> allPendingCustomerRentals = rentService.getCustomerPendingRentals(email);
         return new ResponseUtil("200", " Success.!", allPendingCustomerRentals);
     }

@@ -376,6 +376,7 @@ public class RentServiceImpl implements RentService {
                     
 //                    System.out.println(lossDamageWaiverPaymentCharge);
 //                    System.out.println(lossDamageWaiverPayment);
+
                     lossDamageWaiverPaymentReturn = lossDamageWaiverPayment - lossDamageWaiverPaymentCharge;
 
 //                    System.out.println(lossDamageWaiverPaymentReturn);
@@ -390,12 +391,26 @@ public class RentServiceImpl implements RentService {
                         }
                     }
 
+                    System.out.println(meterEnd);
+                    System.out.println(meterStart);
+
+                    long kms = meterEnd - meterStart;
+
                     if (rentDurationPlan.equalsIgnoreCase(RentDurationPlan.DAILY.getRentDurationPlan())) {
                         rentHasCar.setRateFee(rate * days);
-                        rentHasCar.setChargeForKms(((meterEnd - meterStart) - (freeKms * days)) * pricePerExtraKm);
+
+                        if (kms >= (freeKms * days)) {
+                            rentHasCar.setChargeForKms((kms - (freeKms * days)) * pricePerExtraKm);
+                        } else {
+                            rentHasCar.setChargeForKms(0.0);
+                        }
                     } else {
                         rentHasCar.setRateFee(rate * months);
-                        rentHasCar.setChargeForKms(((meterEnd - meterStart) - (freeKms * months)) * pricePerExtraKm);
+                        if (kms >= (freeKms * months)) {
+                            rentHasCar.setChargeForKms((kms - (freeKms * months)) * pricePerExtraKm);
+                        } else {
+                            rentHasCar.setChargeForKms(0.0);
+                        }
                     }
 
                     rentHasCar.setAmountPerCarPerTrip(rentHasCar.getDriverFee() + rentHasCar.getRateFee() + rentHasCar.getChargeForKms());
@@ -436,10 +451,13 @@ public class RentServiceImpl implements RentService {
         Customer customer = customerRepo.findByEmail(customerEmail);
 
         long customerId = customer.getCustomerId();
+        System.out.println(customerId);
 
         List<Rent> rentsNotPending = rentRepo.findAllByCustomerNotStatus(customerId, RentStatus.PENDING.getStatus());
 
         ArrayList<RentDTO> rentDTOs = new ArrayList<>();
+
+        System.out.println(rentsNotPending);
 
         for (Rent rent : rentsNotPending) {
             RentDTO rentDTO = new RentDTO();
@@ -460,12 +478,14 @@ public class RentServiceImpl implements RentService {
         Customer customer = customerRepo.findByEmail(customerEmail);
 
         long customerId = customer.getCustomerId();
+        System.out.println(customerId);
 
-        List<Rent> customerRents = rentRepo.findAllByCustomer_CustomerId(customerId);
+        List<Rent> customerPendingRents = rentRepo.findAllByCustomer_CustomerIdAndStatus(customerId, RentStatus.PENDING.getStatus());
+        System.out.println(customerPendingRents);
 
         ArrayList<RentDTO> rentDTOs = new ArrayList<>();
 
-        for (Rent rent : customerRents) {
+        for (Rent rent : customerPendingRents) {
             RentDTO rentDTO = new RentDTO();
             rentDTO.setRentId(rent.getRentId());
             rentDTO.setStartDate(rent.getStartDate().toLocalDate());

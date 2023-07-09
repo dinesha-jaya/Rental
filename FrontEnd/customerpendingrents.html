@@ -53,7 +53,7 @@
         } catch (err) {
             console.log(err);
         }
-        // console.log(credentials);
+        console.log(credentials);
 
         if (credentials != null) {
             let username = credentials.username;
@@ -83,6 +83,7 @@
             btnLoginOut.value = "Login";
             // btnPricingRent.value = "Pricing";
             $('#lnkCustomerPendingRentsRent').css("display", "block");
+            location.href = "index.html";
         } else {
             location.href = "signin.html";
         }
@@ -90,8 +91,10 @@
 
     async function getAllPendingCustomerRentals() {
         try {
+            let email = credentials.username;
+            console.log(email);
             let responds = await $.ajax({
-                url: 'http://localhost:8080/rental/rent/pending/customer?email' + credentials.username,
+                url: 'http://localhost:8080/rental/rent/pending/customer?email=' + email,
                 dataType: 'json',
                 success: function (resp) {
                     for (let rent of resp.data) {
